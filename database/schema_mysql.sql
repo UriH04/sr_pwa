@@ -163,3 +163,4 @@ CREATE TABLE rutas_optimizadas (
     INDEX idx_modo (modo),
     INDEX idx_fecha_calculo (fecha_calculo)
 );
+-- prieba del clon
