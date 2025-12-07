@@ -8,3 +8,5 @@ def calcular_ruta(id_origen, id_destino, db):
     if conexion:
         return {"ruta": [id_origen, id_destino], "distancia": float(conexion.distancia_km)}
     return {"ruta": [], "distancia": 0.0}
+
+#Prueba para Git
