@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, DECIMAL, TIMESTAMP, Enum, Text, JSON, ForeignKey
 from sqlalchemy.orm import relationship
-from .dependencies import Base  # Importa Base de dependencies.py
+from .dependencies import Base
 
-# Modelo para usuarios
 class Usuario(Base):
     __tablename__ = 'usuarios'
     id_usuario = Column(Integer, primary_key=True, autoincrement=True)
@@ -12,7 +11,6 @@ class Usuario(Base):
     rol = Column(Enum('admin', 'repartidor'), nullable=False)
     fecha_registro = Column(TIMESTAMP, default='CURRENT_TIMESTAMP')
 
-# Modelo para vehiculos
 class Vehiculo(Base):
     __tablename__ = 'vehiculos'
     id_vehiculo = Column(Integer, primary_key=True, autoincrement=True)
@@ -33,7 +31,6 @@ class Vehiculo(Base):
     valor_aproximado = Column(Float)
     velocidad_promedio_kmh = Column(Float, default=25.0)
 
-# Modelo para nodos_del_mapa
 class NodoMapa(Base):
     __tablename__ = 'nodos_del_mapa'
     id_nodo = Column(Integer, primary_key=True, autoincrement=True)
@@ -44,7 +41,6 @@ class NodoMapa(Base):
     direccion = Column(Text)
     fecha_creacion = Column(TIMESTAMP, default='CURRENT_TIMESTAMP')
 
-# Modelo para conexiones_mapa
 class ConexionMapa(Base):
     __tablename__ = 'conexiones_mapa'
     id_conexion = Column(Integer, primary_key=True, autoincrement=True)
@@ -55,7 +51,6 @@ class ConexionMapa(Base):
     tipo_via = Column(Enum('autopista', 'avenida', 'calle', 'atajo'), default='calle')
     trafico_promedio = Column(DECIMAL(3, 2), default=0.0)
 
-# Modelo para pedidos
 class Pedido(Base):
     __tablename__ = 'pedidos'
     id_pedido = Column(Integer, primary_key=True, autoincrement=True)
@@ -69,7 +64,6 @@ class Pedido(Base):
     estado = Column(Enum('pendiente', 'asignado', 'en_ruta', 'entregado', 'cancelado'), default='pendiente')
     fecha_creacion = Column(TIMESTAMP, default='CURRENT_TIMESTAMP')
 
-# Modelo para entregas
 class Entrega(Base):
     __tablename__ = 'entregas'
     id_entrega = Column(Integer, primary_key=True, autoincrement=True)
@@ -79,7 +73,6 @@ class Entrega(Base):
     fecha_asignacion = Column(TIMESTAMP, default='CURRENT_TIMESTAMP')
     fecha_entrega = Column(TIMESTAMP)
 
-# Modelo para rutas_optimizadas
 class RutaOptimizada(Base):
     __tablename__ = 'rutas_optimizadas'
     id_ruta = Column(Integer, primary_key=True, autoincrement=True)

@@ -16,3 +16,6 @@ def get_db():
 
 def create_tables():
     Base.metadata.create_all(bind=engine) #crea tabla si no existe
+
+
+
