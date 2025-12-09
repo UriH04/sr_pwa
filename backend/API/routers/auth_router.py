@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
-from ..dependencies import det_db
+from ..dependencies import get_db
 from ..models import Usuario
 
 router = APIRouter()

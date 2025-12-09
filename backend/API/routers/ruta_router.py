@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from ..dependencies import get_db  # Conexión a BD 
-from..models import NodoMapa, Vehiculo, RutaOptimizada
-from ...core.Dijsktra import calcular_ruta  # Placeholder: importa tu función real
-from ...core.calculos import calcular_metricas
+from ..models import NodoMapa, Vehiculo, RutaOptimizada
+from core.dijkstra import calcular_ruta  # Placeholder: importa tu función real
+from core.calculos import calcular_metricas
 
 router = APIRouter()
 
@@ -19,7 +19,7 @@ class RutaResponse(BaseModel):
     costo: float
     energia: float
 
-@router.post("/", response_model=RutaResponse, dependencies=[Depends(get_current_user)])
+@router.post("/", response_model=RutaResponse)
 def generar_ruta(request: RutaRequest, db=Depends(get_db)):
     origen = db.query(NodoMapa).filter(NodoMapa.nombre == request.origen).first()
     destino = db.query(NodoMapa).filter(NodoMapa.nombre == request.destino).first()

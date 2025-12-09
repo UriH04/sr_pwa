@@ -1,4 +1,4 @@
-from ..API.models import ConexionMapa
+from API.models import ConexionMapa
 
 def calcular_ruta(id_origen, id_destino, db):
     conexion = db.query(ConexionMapa).filter(

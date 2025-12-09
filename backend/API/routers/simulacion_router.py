@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
-from ...core.simulacion import simular_movimiento  # Placeholder
+from core.simulacion import simular_movimiento  # Placeholder
 
 router = APIRouter()
 
@@ -10,7 +10,7 @@ class SimulacionRequest(BaseModel):
 class SimulacionResponse(BaseModel):
     posiciones: list[dict]  # Lista de {"x": float, "y": float, "tiempo": float}
 
-@router.post("/", response_model=SimulacionResponse, dependencies=[Depends(get_current_user)])
+@router.post("/", response_model=SimulacionResponse)
 def simular(request: SimulacionRequest):
     # Placeholder: Llama a simulator.py
     # posiciones = simular_movimiento(request.ruta)
