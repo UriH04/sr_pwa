@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 from ..dependencies import get_db
 from backend.API.models import Vehiculo, Pedido
-from backend.core.dijkstra import obtener_datos_ruta, obtener_incidencias_trafico, construir_grafo_logico
+from backend.core.dijkstra import obtener_ruta_multiparada, obtener_incidencias_trafico, construir_grafo_logico
 from backend.core.calculos import calcular_pedido
 from backend.core.simulacion import generar_mapa_visual
 

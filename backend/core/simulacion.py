@@ -1,6 +1,6 @@
 # NOMBRE DEL ARCHIVO: simulacion.py
 import folium
-import dijkstra
+from . import dijkstra
 
 def traducir_detalles_trafico(texto_original):
     if not texto_original: return "Sin detalles"
