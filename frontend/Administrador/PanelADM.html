@@ -1,0 +1,1202 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - RutaTec Paquetería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --primary-dark: #0c1b33;
+            --primary: #1a3a5f;
+            --primary-light: #3498db;
+            --primary-extra-light: #bbdefb;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --dark: #111111;
+            --darker: #0a0a15;
+            --light: #e8f4fc;
+            --white: #ffffff;
+            --gray: #7f8c8d;
+            --gray-light: #ecf0f1;
+            
+            --gradient-bg: linear-gradient(135deg, var(--primary-dark) 0%, #0d2b4a 50%, var(--primary-dark) 100%);
+            --gradient-card: linear-gradient(145deg, rgba(26, 58, 95, 0.95), rgba(17, 34, 64, 0.95));
+            --gradient-primary: linear-gradient(135deg, var(--primary-light), #2980b9);
+            --gradient-success: linear-gradient(135deg, var(--secondary), #27ae60);
+            
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
+            --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 20px;
+            --border-radius-round: 50%;
+            
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== DECORACIONES DE FONDO ===== */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(26, 58, 95, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.05) 0%, transparent 20%);
+            z-index: -2;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: var(--border-radius-round);
+            background: radial-gradient(circle, var(--primary-light), transparent 70%);
+            opacity: 0.15;
+            filter: blur(20px);
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 250px;
+            height: 250px;
+            bottom: -50px;
+            left: -100px;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 40%;
+            right: 20%;
+            animation: float 18s ease-in-out infinite;
+            animation-delay: 2s;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                transform: scale(1); 
+            }
+            50% { 
+                transform: scale(1.05); 
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        /* ===== ESTRUCTURA PRINCIPAL ===== */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        /* ===== HEADER ===== */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite linear;
+        }
+
+        .logo-text h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary-extra-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* ===== BOTÓN DE REGRESO ===== */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .back-btn i {
+            transition: transform var(--transition-normal);
+        }
+
+        .back-btn:hover i {
+            transform: translateX(-3px);
+        }
+
+        /* ===== TARJETA DE BIENVENIDA SIMPLIFICADA ===== */
+        .welcome-card {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-xl);
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .welcome-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary), var(--primary-light));
+        }
+
+        .welcome-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .welcome-text h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: var(--white);
+            background: linear-gradient(45deg, var(--primary-light), var(--white));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .welcome-text p {
+            color: var(--primary-extra-light);
+            font-size: 1.2rem;
+            max-width: 700px;
+            line-height: 1.7;
+        }
+
+        .user-info {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 15px 25px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            backdrop-filter: blur(5px);
+            min-width: 250px;
+        }
+
+        .user-info i {
+            color: var(--primary-light);
+            font-size: 1.3rem;
+        }
+
+        .user-info span {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* ===== GRID DE FUNCIONALIDADES ===== */
+        .functionalities-section {
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h3 {
+            font-size: 1.8rem;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-header h3::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--primary-light);
+            border-radius: 2px;
+        }
+
+        .functions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        /* ===== TARJETAS DE FUNCIÓN ===== */
+        .function-card {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-lg);
+            padding: 0;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            position: relative;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .function-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--primary-light);
+        }
+
+        .function-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-light), var(--secondary));
+        }
+
+        .function-card-content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .function-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--primary-light);
+            transition: all var(--transition-normal);
+        }
+
+        .function-card:hover .function-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .function-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--white);
+        }
+
+        .function-description {
+            color: var(--primary-extra-light);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .function-destination {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-light);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .function-destination i {
+            transition: transform var(--transition-normal);
+        }
+
+        .function-card:hover .function-destination i {
+            transform: translateX(5px);
+        }
+
+        .function-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--gradient-success);
+            color: var(--white);
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== PANEL DE ESTADO ===== */
+        .status-panel {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-xl);
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .status-panel h3 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-panel h3 i {
+            color: var(--primary-light);
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--primary-extra-light);
+        }
+
+        .status-label i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .status-value {
+            font-weight: 600;
+        }
+
+        .status-value.operational {
+            color: var(--secondary);
+        }
+
+        .status-value.warning {
+            color: var(--warning);
+        }
+
+        .status-value.danger {
+            color: var(--danger);
+        }
+
+        /* ===== FOOTER ===== */
+        .dashboard-footer {
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            animation: fadeInUp 0.8s ease-out 0.8s both;
+        }
+
+        .footer-text {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .session-info i {
+            color: var(--primary-light);
+        }
+
+        #session-time {
+            font-weight: 600;
+        }
+
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 25px;
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(10px);
+            border-left: 5px solid;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: rgba(46, 204, 113, 0.9);
+            border-left-color: var(--secondary);
+        }
+
+        .notification.info {
+            background: rgba(52, 152, 219, 0.9);
+            border-left-color: var(--primary-light);
+        }
+
+        .notification.warning {
+            background: rgba(241, 196, 15, 0.9);
+            border-left-color: var(--warning);
+        }
+
+        .notification .close-notification {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity var(--transition-fast);
+        }
+
+        .notification .close-notification:hover {
+            opacity: 1;
+        }
+
+        /* ===== TOOLTIP ===== */
+        .tooltip {
+            position: relative;
+        }
+
+        .tooltip-text {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--white);
+            padding: 12px 18px;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.9rem;
+            width: 300px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+            z-index: 100;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-lg);
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 6px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltip-text {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .functions-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+            
+            .welcome-content {
+                flex-direction: column;
+                gap: 25px;
+            }
+            
+            .user-info {
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .logo-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .welcome-card {
+                padding: 30px 25px;
+            }
+            
+            .welcome-text h2 {
+                font-size: 1.8rem;
+            }
+            
+            .welcome-text p {
+                font-size: 1.1rem;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .functions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-card {
+                padding: 25px 20px;
+            }
+            
+            .function-card-content {
+                padding: 25px 20px;
+            }
+            
+            .function-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 1.8rem;
+            }
+            
+            .function-title {
+                font-size: 1.3rem;
+            }
+            
+            .status-panel {
+                padding: 25px 20px;
+            }
+            
+            .notification {
+                top: 20px;
+                right: 20px;
+                left: 20px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decoraciones de fondo -->
+    <div class="bg-pattern"></div>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification">
+        <button class="close-notification"><i class="fas fa-times"></i></button>
+        <div id="notification-message"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-shipping-fast"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>RutaTec Admin</h1>
+                    <p>Dashboard de Administración Logística</p>
+                </div>
+            </div>
+            
+            <a href="../Rol.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Menú Principal
+            </a>
+        </header>
+
+        <!-- Tarjeta de bienvenida simplificada -->
+        <section class="welcome-card">
+            <div class="welcome-content">
+                <div class="welcome-text">
+                    <h2>Bienvenido al Panel de Control</h2>
+                    <p>Desde aquí puedes gestionar todas las operaciones de paquetería de manera centralizada. 
+                       Monitorea en tiempo real, accede a informes detallados y optimiza la logística de entregas 
+                       con nuestras herramientas especializadas.</p>
+                </div>
+                <div class="user-info">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Administrador Principal</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Funcionalidades principales -->
+        <section class="functionalities-section">
+            <div class="section-header">
+                <h3>Módulos Principales</h3>
+                <div class="tooltip">
+                    <span style="color: var(--primary-extra-light); font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i> Pasa el cursor sobre cada módulo
+                    </span>
+                    <div class="tooltip-text">
+                        Cada módulo está diseñado para una función específica del sistema de paquetería. 
+                        Haz clic para acceder a la funcionalidad completa con todas las herramientas disponibles.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="functions-grid">
+                <!-- Módulo 1: Gestión de Envíos -->
+                <div class="function-card" data-module="envios" data-url="/Administrador/gestion-envios.html">
+                    <div class="function-badge">Esencial</div>
+                    <div class="function-card-content">
+                        <div class="function-icon">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <h3 class="function-title">Gestión de Envíos</h3>
+                        <p class="function-description">
+                            Administra todos los envíos del sistema: creación, seguimiento, actualización de estados y resolución de incidencias. 
+                            Incluye herramientas para etiquetado, notificación a clientes y gestión de devoluciones.
+                        </p>
+                        <div class="function-destination">
+                            <span>Acceder al módulo de envíos</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Módulo 2: Rutas y Entregas -->
+                <div class="function-card" data-module="rutas" data-url="/Administrador/rutas-entregas.html">
+                    <div class="function-card-content">
+                        <div class="function-icon">
+                            <i class="fas fa-route"></i>
+                        </div>
+                        <h3 class="function-title">Rutas y Entregas</h3>
+                        <p class="function-description">
+                            Planifica y optimiza rutas de entrega, asigna repartidores, visualiza mapas en tiempo real y monitorea 
+                            el progreso de cada entrega. Incluye análisis de eficiencia de rutas y herramientas de geolocalización.
+                        </p>
+                        <div class="function-destination">
+                            <span>Optimizar logística de entregas</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Módulo 3: Reportes y Analytics -->
+                <div class="function-card" data-module="reportes" data-url="/Administrador/reportes.html">
+                    <div class="function-card-content">
+                        <div class="function-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="function-title">Reportes y Analytics</h3>
+                        <p class="function-description">
+                            Genera reportes detallados de desempeño, métricas de entrega, análisis de rentabilidad y tendencias. 
+                            Exporta datos en múltiples formatos para análisis avanzado y presentaciones ejecutivas.
+                        </p>
+                        <div class="function-destination">
+                            <span>Ver análisis y reportes</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Módulo 4: Configuración -->
+                <div class="function-card" data-module="config" data-url="/Administrador/configuracion.html">
+                    <div class="function-card-content">
+                        <div class="function-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3 class="function-title">Configuración</h3>
+                        <p class="function-description">
+                            Personaliza parámetros del sistema, gestiona usuarios y permisos, configura notificaciones, 
+                            integraciones y ajusta las reglas de negocio según las necesidades específicas de tu operación.
+                        </p>
+                        <div class="function-destination">
+                            <span>Personalizar sistema</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Módulo 5: Soporte (ahora en lugar de Clientes) -->
+                <div class="function-card" data-module="soporte" data-url="/Administrador/soporte.html">
+                    <div class="function-card-content">
+                        <div class="function-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h3 class="function-title">Centro de Soporte</h3>
+                        <p class="function-description">
+                            Gestiona consultas y problemas de clientes, seguimiento de tickets, respuestas automatizadas 
+                            y métricas de satisfacción. Integrado completamente con el sistema de envíos para atención eficiente.
+                        </p>
+                        <div class="function-destination">
+                            <span>Atender solicitudes de soporte</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel de estado -->
+        <section class="status-panel">
+            <h3><i class="fas fa-heartbeat"></i> Estado del Sistema</h3>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div class="status-label">
+                        <i class="fas fa-server"></i>
+                        <span>Sistema Principal</span>
+                    </div>
+                    <div class="status-value operational">
+                        <i class="fas fa-circle"></i> Operativo
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">
+                        <i class="fas fa-database"></i>
+                        <span>Base de Datos</span>
+                    </div>
+                    <div class="status-value operational">
+                        <i class="fas fa-circle"></i> Conectado
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Seguridad</span>
+                    </div>
+                    <div class="status-value operational">
+                        <i class="fas fa-circle"></i> Protegido
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">
+                        <i class="fas fa-clock"></i>
+                        <span>Hora del Sistema</span>
+                    </div>
+                    <div class="status-value" id="system-time">
+                        Cargando...
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">
+                        <i class="fas fa-code-branch"></i>
+                        <span>Versión</span>
+                    </div>
+                    <div class="status-value">
+                        v2.5.1
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-label">
+                        <i class="fas fa-bolt"></i>
+                        <span>Rendimiento</span>
+                    </div>
+                    <div class="status-value operational">
+                        98.7%
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="footer-text">
+                <p>&copy; 2025 Sistema RutaTec - Panel de Administración</p>
+                <p>Logística Inteligente &middot; Seguridad Empresarial &middot; Alto Rendimiento</p>
+            </div>
+            <div class="session-info">
+                <i class="fas fa-user-clock"></i>
+                <div>
+                    <div>Sesión activa</div>
+                    <div id="session-time">--:--</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ===== CONFIGURACIÓN =====
+        const MODULE_URLS = {
+            envios: './Paneles/gestion-envios.html',
+            rutas: './Paneles/simulador.html',
+            reportes: './Paneles/reportes.html',
+            config: './Paneles/configuracion.html',
+            soporte: './Paneles/soporte.html'
+        };
+
+        const MODULE_DESCRIPTIONS = {
+            envios: "Panel completo para administrar todos los aspectos relacionados con envíos: creación, seguimiento, actualización de estados, etiquetado y notificaciones. Incluye gestión de devoluciones y herramientas para resolver incidencias.",
+            rutas: "Sistema de optimización de rutas con mapas en tiempo real, asignación inteligente de repartidores y monitoreo de progreso. Incluye análisis de eficiencia de rutas y herramientas de geolocalización.",
+            reportes: "Herramientas analíticas avanzadas para generación de reportes, métricas de desempeño y exportación de datos. Perfecto para análisis de rentabilidad y presentaciones ejecutivas.",
+            config: "Centro de personalización del sistema: usuarios, permisos, integraciones y ajustes de negocio. Configura todas las reglas y parámetros del sistema según tus necesidades.",
+            soporte: "Sistema de tickets y atención al cliente integrado con el módulo de envíos. Gestiona consultas, problemas y métricas de satisfacción de manera eficiente."
+        };
+
+        // ===== FUNCIONES UTILITARIAS =====
+        function showNotification(message, type = 'info', duration = 4000) {
+            const notification = document.getElementById('notification');
+            const messageElement = document.getElementById('notification-message');
+            
+            notification.className = `notification ${type} show`;
+            messageElement.textContent = message;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        function updateTime() {
+            const now = new Date();
+            
+            const systemTime = now.toLocaleTimeString('es-MX', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('system-time').textContent = systemTime;
+            
+            const sessionStart = new Date(now.getTime() - 45 * 60000);
+            const sessionDuration = Math.floor((now - sessionStart) / 60000);
+            const hours = Math.floor(sessionDuration / 60);
+            const minutes = sessionDuration % 60;
+            document.getElementById('session-time').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+
+        function navigateToModule(moduleCard) {
+            const module = moduleCard.getAttribute('data-module');
+            const url = MODULE_URLS[module] || '#';
+            
+            moduleCard.style.transform = 'scale(0.98)';
+            
+            const moduleNames = {
+                envios: 'Gestión de Envíos',
+                rutas: 'Rutas y Entregas',
+                reportes: 'Reportes y Analytics',
+                config: 'Configuración',
+                soporte: 'Centro de Soporte'
+            };
+            
+            showNotification(`Accediendo a ${moduleNames[module]}...`, 'info', 2000);
+            
+            setTimeout(() => {
+                moduleCard.style.transform = '';
+            }, 300);
+            
+            if (url && url !== '#') {
+                setTimeout(() => {
+                    console.log(`🔗 Navegando a: ${url}`);
+                    window.location.href = url;
+                }, 800);
+            } else {
+                showNotification('Módulo en desarrollo. Disponible próximamente.', 'warning', 3000);
+            }
+        }
+
+        function initializeTooltips() {
+            const functionCards = document.querySelectorAll('.function-card');
+            
+            functionCards.forEach(card => {
+                const module = card.getAttribute('data-module');
+                const description = MODULE_DESCRIPTIONS[module];
+                
+                if (description) {
+                    card.addEventListener('mouseenter', function(e) {
+                        const tooltip = document.createElement('div');
+                        tooltip.className = 'tooltip-text';
+                        tooltip.textContent = description;
+                        tooltip.style.position = 'fixed';
+                        tooltip.style.top = `${e.clientY - 200}px`;
+                        tooltip.style.left = `${e.clientX}px`;
+                        tooltip.style.transform = 'translateX(-50%)';
+                        tooltip.id = 'dynamic-tooltip';
+                        
+                        document.body.appendChild(tooltip);
+                    });
+                    
+                    card.addEventListener('mouseleave', function() {
+                        const tooltip = document.getElementById('dynamic-tooltip');
+                        if (tooltip) {
+                            tooltip.remove();
+                        }
+                    });
+                }
+            });
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Dashboard RutaTec inicializado');
+            console.log('📊 Módulos activos:', Object.keys(MODULE_URLS).length);
+            
+            setInterval(updateTime, 1000);
+            updateTime();
+            
+            initializeTooltips();
+            
+            document.querySelectorAll('.function-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    navigateToModule(this);
+                });
+                
+                card.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('.function-icon');
+                    if (icon) {
+                        icon.style.transform = 'scale(1.1) rotate(5deg)';
+                    }
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('.function-icon');
+                    if (icon) {
+                        icon.style.transform = '';
+                    }
+                    
+                    const tooltip = document.getElementById('dynamic-tooltip');
+                    if (tooltip) {
+                        tooltip.remove();
+                    }
+                });
+            });
+            
+            document.querySelector('.close-notification').addEventListener('click', function() {
+                document.getElementById('notification').classList.remove('show');
+            });
+            
+            setTimeout(() => {
+                showNotification('Panel de control cargado correctamente. Todo operativo.', 'success', 3000);
+            }, 1000);
+            
+            const animatedElements = [
+                '.welcome-card',
+                '.functionalities-section',
+                '.status-panel',
+                '.dashboard-footer'
+            ];
+            
+            animatedElements.forEach((selector, index) => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.style.animationDelay = `${0.2 + (index * 0.15)}s`;
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.altKey && e.key >= '1' && e.key <= '5') {
+                const index = parseInt(e.key) - 1;
+                const modules = Object.keys(MODULE_URLS);
+                
+                if (modules[index]) {
+                    const moduleCard = document.querySelector(`[data-module="${modules[index]}"]`);
+                    if (moduleCard) {
+                        navigateToModule(moduleCard);
+                    }
+                }
+            }
+            
+            if (e.key === 'Escape') {
+                document.getElementById('notification').classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>

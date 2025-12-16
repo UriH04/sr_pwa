@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soporte Técnico - RutaTec</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --primary-dark: #0c1b33;
+            --primary: #1a3a5f;
+            --primary-light: #3498db;
+            --primary-extra-light: #bbdefb;
+            --secondary: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f1c40f;
+            --dark: #111111;
+            --darker: #0a0a15;
+            --light: #e8f4fc;
+            --white: #ffffff;
+            --gray: #7f8c8d;
+            --gray-light: #ecf0f1;
+            
+            --gradient-bg: linear-gradient(135deg, var(--primary-dark) 0%, #0d2b4a 50%, var(--primary-dark) 100%);
+            --gradient-card: linear-gradient(145deg, rgba(26, 58, 95, 0.95), rgba(17, 34, 64, 0.95));
+            --gradient-primary: linear-gradient(135deg, var(--primary-light), #2980b9);
+            --gradient-success: linear-gradient(135deg, var(--secondary), #27ae60);
+            
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
+            
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 20px;
+            
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* ===== DECORACIONES DE FONDO ===== */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(26, 58, 95, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.05) 0%, transparent 20%);
+            z-index: -2;
+        }
+
+        /* ===== ESTRUCTURA PRINCIPAL ===== */
+        .support-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== HEADER ===== */
+        .support-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .support-logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .support-logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .support-logo-text h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary-extra-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .support-logo-text p {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        /* ===== BOTONES DE NAVEGACIÓN ===== */
+        .support-nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-btn i {
+            transition: transform var(--transition-normal);
+        }
+
+        .nav-btn:hover i {
+            transform: translateX(-3px);
+        }
+
+        /* ===== INFORMACIÓN DE CONTACTO ===== */
+        .contact-info {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
+            margin-bottom: 40px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            box-shadow: var(--shadow-md);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .contact-info h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .contact-card {
+            background: rgba(17, 34, 64, 0.5);
+            border-radius: var(--border-radius-md);
+            padding: 20px;
+            border-left: 4px solid var(--primary-light);
+            transition: all var(--transition-normal);
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: var(--border-radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--primary-light);
+        }
+
+        .contact-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--white);
+        }
+
+        .contact-card p {
+            color: var(--primary-extra-light);
+            font-size: 1rem;
+        }
+
+        .contact-link {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .contact-link:hover {
+            color: var(--primary-extra-light);
+            text-decoration: underline;
+        }
+
+        /* ===== FORMULARIO DE REPORTE ===== */
+        .report-section {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-lg);
+            padding: 40px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            box-shadow: var(--shadow-md);
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .report-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--primary-extra-light);
+            font-weight: 500;
+            font-size: 1.05rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            background: rgba(17, 34, 64, 0.8);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        textarea.form-control {
+            min-height: 180px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        select.form-control {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233498db' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 15px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== BOTONES DE FORMULARIO ===== */
+        .form-actions {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 35px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: none;
+            font-size: 1.1rem;
+            text-decoration: none;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, var(--primary-light));
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        /* ===== MODAL DE CONFIRMACIÓN ===== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-lg);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(52, 152, 219, 0.3);
+            box-shadow: var(--shadow-xl);
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .modal-header {
+            padding: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(26, 58, 95, 0.5);
+            border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: var(--primary-extra-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .close-modal:hover {
+            color: var(--white);
+        }
+
+        .modal-body {
+            padding: 30px;
+            color: var(--primary-extra-light);
+            line-height: 1.5;
+        }
+
+        .modal-footer {
+            padding: 25px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 25px;
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(10px);
+            border-left: 5px solid;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            max-width: 350px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            background: rgba(46, 204, 113, 0.9);
+            border-left-color: var(--secondary);
+        }
+
+        .notification.error {
+            background: rgba(231, 76, 60, 0.9);
+            border-left-color: var(--danger);
+        }
+
+        .notification.info {
+            background: rgba(52, 152, 219, 0.9);
+            border-left-color: var(--primary-light);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .support-header {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .support-logo {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .support-nav {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .nav-btn {
+                flex: 1;
+                min-width: 140px;
+                justify-content: center;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-section {
+                padding: 30px 25px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .support-logo-text h1 {
+                font-size: 1.7rem;
+            }
+            
+            .report-section {
+                padding: 25px 20px;
+            }
+            
+            .report-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .form-group label {
+                font-size: 1rem;
+            }
+            
+            .modal-content {
+                margin: 10px;
+            }
+            
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 20px;
+            }
+        }
+
+        /* ===== ESTILOS ADICIONALES ===== */
+        .required {
+            color: var(--danger);
+        }
+
+        .form-hint {
+            font-size: 0.9rem;
+            color: var(--primary-extra-light);
+            margin-top: 5px;
+            opacity: 0.8;
+        }
+
+        .contact-hours {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+        }
+
+        .contact-urgent {
+            background: rgba(231, 76, 60, 0.1);
+            border-left-color: var(--danger);
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius-md);
+        }
+
+        .contact-urgent h4 {
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Decoraciones de fondo -->
+    <div class="bg-pattern"></div>
+
+    <!-- Modal de confirmación -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> Reporte Enviado</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modalMessage">Tu reporte ha sido enviado exitosamente y guardado en nuestra base de datos. Te contactaremos pronto.</p>
+                <div id="reportDetails" style="margin-top: 25px; padding: 20px; background: rgba(17, 34, 64, 0.5); border-radius: var(--border-radius-md);">
+                    <!-- Los detalles del reporte se mostrarán aquí -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cerrar</button>
+                <button class="btn btn-primary" onclick="printReport()">
+                    <i class="fas fa-print"></i> Imprimir Reporte
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification">
+        <div id="notificationMessage"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="support-container">
+        <!-- Header -->
+        <header class="support-header">
+            <div class="support-logo">
+                <div class="support-logo-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <div class="support-logo-text">
+                    <h1>Soporte Técnico RutaTec</h1>
+                    <p>Sistema de Reportes y Asistencia</p>
+                </div>
+            </div>
+            
+            <div class="support-nav">
+                <a href="../PanelADM.html" class="nav-btn">
+                    <i class="fas fa-home"></i>
+                    Volver al Panel
+                </a>
+                <a href="tel:+525512345678" class="nav-btn">
+                    <i class="fas fa-phone"></i>
+                    Llamar Ahora
+                </a>
+            </div>
+        </header>
+
+        <!-- Información de contacto -->
+        <section class="contact-info">
+            <h2><i class="fas fa-address-card"></i> Contacto de la Empresa</h2>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Correo Electrónico</h3>
+                    <p>
+                        <a href="mailto:soporte@rutatec.com" class="contact-link">
+                            soporte@rutatec.com
+                        </a>
+                    </p>
+                    <div class="contact-hours">
+                        <i class="fas fa-clock"></i> Respuesta en menos de 24 horas
+                    </div>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>Teléfono de Soporte</h3>
+                    <p>
+                        <a href="tel:+525512345678" class="contact-link">
+                            +52 55 1234 5678
+                        </a>
+                    </p>
+                    <div class="contact-hours">
+                        <i class="fas fa-clock"></i> Lunes a Viernes: 8:00 - 20:00 hrs
+                    </div>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Dirección</h3>
+                    <p>Av. Insurgentes Sur 1234</p>
+                    <p>Col. Nápoles, Ciudad de México</p>
+                    <div class="contact-hours">
+                        <i class="fas fa-building"></i> Oficinas centrales
+                    </div>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>Horarios de Atención</h3>
+                    <p><strong>Lunes a Viernes:</strong> 8:00 - 20:00</p>
+                    <p><strong>Sábados:</strong> 9:00 - 14:00</p>
+                    <div class="contact-hours">
+                        <i class="fas fa-calendar"></i> Servicio extendido
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-urgent">
+                <h4><i class="fas fa-exclamation-triangle"></i> Soporte Urgente</h4>
+                <p>Para emergencias fuera de horario, llama al: <strong>+52 55 8765 4321</strong></p>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Disponible 24/7 para problemas críticos del sistema</p>
+            </div>
+        </section>
+
+        <!-- Formulario de reporte -->
+        <section class="report-section">
+            <h2><i class="fas fa-plus-circle"></i> Crear Reporte de Soporte</h2>
+            
+            <form id="reportForm">
+                <div class="form-group">
+                    <label for="reportType"><i class="fas fa-tag"></i> Tipo de Reporte <span class="required">*</span></label>
+                    <select id="reportType" class="form-control" required>
+                        <option value="">Selecciona un tipo de problema</option>
+                        <option value="technical">Problema Técnico del Sistema</option>
+                        <option value="delivery">Problema con Entrega o Envío</option>
+                        <option value="billing">Error en Facturación o Cobro</option>
+                        <option value="account">Problema con Cuenta de Usuario</option>
+                        <option value="feature">Solicitud de Nueva Funcionalidad</option>
+                        <option value="other">Otro Tipo de Problema</option>
+                    </select>
+                    <div class="form-hint">Selecciona la categoría que mejor describa tu problema</div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerName"><i class="fas fa-user"></i> Nombre Completo <span class="required">*</span></label>
+                        <input type="text" id="customerName" class="form-control" placeholder="Ej: Juan Pérez González" required>
+                        <div class="form-hint">Ingresa tu nombre completo como aparece en tu cuenta</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerEmail"><i class="fas fa-envelope"></i> Correo Electrónico <span class="required">*</span></label>
+                        <input type="email" id="customerEmail" class="form-control" placeholder="ejemplo@correo.com" required>
+                        <div class="form-hint">Usaremos este correo para contactarte</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="customerPhone"><i class="fas fa-phone"></i> Teléfono de Contacto <span class="required">*</span></label>
+                        <input type="tel" id="customerPhone" class="form-control" placeholder="+52 55 1234 5678" required>
+                        <div class="form-hint">Incluye código de país y área</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="trackingNumber"><i class="fas fa-barcode"></i> Número de Seguimiento (opcional)</label>
+                        <input type="text" id="trackingNumber" class="form-control" placeholder="TRK-123456789 o ORD-789456">
+                        <div class="form-hint">Si tu problema está relacionado con un envío específico</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reportSubject"><i class="fas fa-heading"></i> Asunto del Reporte <span class="required">*</span></label>
+                    <input type="text" id="reportSubject" class="form-control" placeholder="Describe brevemente el problema" required>
+                    <div class="form-hint">Sé específico pero conciso (ej: "No puedo acceder a mi cuenta desde ayer")</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reportDescription"><i class="fas fa-file-alt"></i> Descripción Detallada <span class="required">*</span></label>
+                    <textarea id="reportDescription" class="form-control" 
+                              placeholder="Por favor describe el problema con todo detalle. Incluye:
+• Pasos para reproducir el problema
+• Mensajes de error que aparecen
+• Fecha y hora en que ocurrió
+• Lo que intentaste para resolverlo
+• Capturas de pantalla (si las tienes)" 
+                              required></textarea>
+                    <div class="form-hint">Mientras más información proporciones, más rápido podremos ayudarte</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="priority"><i class="fas fa-exclamation-circle"></i> Nivel de Urgencia <span class="required">*</span></label>
+                    <select id="priority" class="form-control" required>
+                        <option value="low">Baja - Problema menor, no afecta operaciones</option>
+                        <option value="medium" selected>Media - Problema que afecta algunas funciones</option>
+                        <option value="high">Alta - Problema crítico que afecta operaciones</option>
+                        <option value="urgent">Urgente - Sistema completamente inoperable</option>
+                    </select>
+                    <div class="form-hint">Selecciona según el impacto en tus operaciones</div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                        <i class="fas fa-times"></i> Limpiar Formulario
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Enviar Reporte
+                    </button>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 15px; background: rgba(17, 34, 64, 0.3); border-radius: var(--border-radius-md); text-align: center;">
+                    <p style="color: var(--primary-extra-light); font-size: 0.9rem;">
+                        <i class="fas fa-info-circle"></i> Todos los campos marcados con <span class="required">*</span> son obligatorios.
+                        Nos pondremos en contacto contigo en un plazo máximo de 24 horas hábiles.
+                    </p>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <script>
+        // ===== BASE DE DATOS SIMULADA =====
+        class Database {
+            constructor() {
+                // Intentar cargar datos existentes de localStorage
+                this.reports = JSON.parse(localStorage.getItem('rutatec_reports')) || [];
+                this.nextId = this.reports.length > 0 ? Math.max(...this.reports.map(r => parseInt(r.id.split('-')[1]))) + 1 : 1001;
+            }
+
+            saveReport(report) {
+                const newReport = {
+                    ...report,
+                    id: `REP-${this.nextId.toString().padStart(4, '0')}`,
+                    status: "open",
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    assignedTo: "Soporte RutaTec",
+                    notes: []
+                };
+
+                this.reports.unshift(newReport);
+                this.nextId++;
+                this.saveToLocalStorage();
+                return newReport;
+            }
+
+            saveToLocalStorage() {
+                localStorage.setItem('rutatec_reports', JSON.stringify(this.reports));
+            }
+        }
+
+        // ===== INSTANCIA DE LA BASE DE DATOS =====
+        const db = new Database();
+
+        // ===== FUNCIONES UTILITARIAS =====
+        function getTypeText(type) {
+            const types = {
+                'technical': 'Técnico del Sistema',
+                'delivery': 'Entrega o Envío',
+                'billing': 'Facturación o Cobro',
+                'account': 'Cuenta de Usuario',
+                'feature': 'Nueva Funcionalidad',
+                'other': 'Otro'
+            };
+            return types[type] || type;
+        }
+
+        function getPriorityText(priority) {
+            const priorities = {
+                'low': 'Baja',
+                'medium': 'Media',
+                'high': 'Alta',
+                'urgent': 'Urgente'
+            };
+            return priorities[priority] || priority;
+        }
+
+        // ===== FUNCIONES DE LA INTERFAZ =====
+        function showNotification(message, type = 'info', duration = 4000) {
+            const notification = document.getElementById('notification');
+            const messageElement = document.getElementById('notificationMessage');
+            
+            notification.className = `notification ${type} show`;
+            messageElement.textContent = message;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, duration);
+        }
+
+        function clearForm() {
+            if (confirm('¿Estás seguro de que deseas limpiar el formulario? Se perderán todos los datos ingresados.')) {
+                document.getElementById('reportForm').reset();
+                showNotification('Formulario limpiado correctamente', 'info', 2000);
+                
+                // Enfocar el primer campo
+                document.getElementById('reportType').focus();
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('confirmationModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function printReport() {
+            // Crear contenido para impresión
+            const reportDetails = document.getElementById('reportDetails').innerHTML;
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Reporte de Soporte - RutaTec</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; color: #333; }
+                        .header { text-align: center; border-bottom: 2px solid #3498db; padding-bottom: 20px; margin-bottom: 30px; }
+                        .header h1 { color: #1a3a5f; }
+                        .details { background: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0; }
+                        .detail-item { margin-bottom: 10px; }
+                        .detail-label { font-weight: bold; color: #1a3a5f; }
+                        .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; font-size: 0.9em; color: #666; }
+                        @media print {
+                            body { padding: 0; }
+                            .no-print { display: none; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Reporte de Soporte Técnico</h1>
+                        <p>Sistema RutaTec - ${new Date().toLocaleDateString('es-MX')}</p>
+                    </div>
+                    <div class="details">
+                        ${reportDetails}
+                    </div>
+                    <div class="footer">
+                        <p>RutaTec Logística Inteligente</p>
+                        <p>soporte@rutatec.com | +52 55 1234 5678</p>
+                        <p>Av. Insurgentes Sur 1234, CDMX</p>
+                    </div>
+                    <button class="no-print" onclick="window.print()" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px;">Imprimir</button>
+                    <button class="no-print" onclick="window.close()" style="padding: 10px 20px; background: #666; color: white; border: none; border-radius: 4px; cursor: pointer; margin-top: 20px; margin-left: 10px;">Cerrar</button>
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            
+            showNotification('Preparando vista de impresión...', 'info', 2000);
+        }
+
+        // ===== MANEJO DEL FORMULARIO =====
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar formulario
+            const requiredFields = ['reportType', 'customerName', 'customerEmail', 'customerPhone', 'reportSubject', 'reportDescription'];
+            const emptyFields = requiredFields.filter(field => !document.getElementById(field).value.trim());
+            
+            if (emptyFields.length > 0) {
+                showNotification('Por favor completa todos los campos requeridos', 'error', 3000);
+                return;
+            }
+            
+            // Validar email
+            const email = document.getElementById('customerEmail').value;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showNotification('Por favor ingresa un correo electrónico válido', 'error', 3000);
+                document.getElementById('customerEmail').focus();
+                return;
+            }
+            
+            // Validar teléfono (mínimo 8 dígitos)
+            const phone = document.getElementById('customerPhone').value;
+            const phoneDigits = phone.replace(/\D/g, '');
+            if (phoneDigits.length < 8) {
+                showNotification('Por favor ingresa un número de teléfono válido (mínimo 8 dígitos)', 'error', 3000);
+                document.getElementById('customerPhone').focus();
+                return;
+            }
+            
+            // Crear objeto de reporte
+            const report = {
+                type: document.getElementById('reportType').value,
+                customerName: document.getElementById('customerName').value,
+                customerEmail: document.getElementById('customerEmail').value,
+                customerPhone: document.getElementById('customerPhone').value,
+                trackingNumber: document.getElementById('trackingNumber').value,
+                subject: document.getElementById('reportSubject').value,
+                description: document.getElementById('reportDescription').value,
+                priority: document.getElementById('priority').value
+            };
+            
+            try {
+                // Guardar en la base de datos
+                const savedReport = db.saveReport(report);
+                
+                // Mostrar modal de confirmación
+                const modal = document.getElementById('confirmationModal');
+                const modalMessage = document.getElementById('modalMessage');
+                const reportDetails = document.getElementById('reportDetails');
+                
+                modalMessage.innerHTML = `
+                    <i class="fas fa-check-circle" style="color: var(--secondary); margin-right: 10px;"></i>
+                    <strong>¡Reporte enviado exitosamente!</strong>
+                    <p style="margin-top: 10px; font-weight: normal; line-height: 1.5;">
+                        Tu reporte ha sido guardado en nuestra base de datos con el ID: 
+                        <strong style="color: var(--primary-light); font-size: 1.1em;">${savedReport.id}</strong><br>
+                        Te contactaremos en un plazo máximo de 24 horas hábiles.
+                    </p>
+                `;
+                
+                reportDetails.innerHTML = `
+                    <div style="display: grid; gap: 12px; font-size: 0.95rem;">
+                        <div><span style="font-weight: bold; color: var(--primary-light);">ID del Reporte:</span> ${savedReport.id}</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Tipo:</span> ${getTypeText(savedReport.type)}</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Cliente:</span> ${savedReport.customerName}</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Correo:</span> ${savedReport.customerEmail}</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Teléfono:</span> ${savedReport.customerPhone}</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Prioridad:</span> ${getPriorityText(savedReport.priority)}</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Estado:</span> En revisión</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Fecha de creación:</span> ${new Date(savedReport.createdAt).toLocaleString('es-MX')}</div>
+                        <div><span style="font-weight: bold; color: var(--primary-light);">Asunto:</span> ${savedReport.subject}</div>
+                        ${savedReport.trackingNumber ? `<div><span style="font-weight: bold; color: var(--primary-light);">N° de Seguimiento:</span> ${savedReport.trackingNumber}</div>` : ''}
+                    </div>
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(17, 34, 64, 0.3); border-radius: var(--border-radius-sm);">
+                        <div style="font-weight: bold; color: var(--primary-light); margin-bottom: 8px;">Descripción:</div>
+                        <div style="white-space: pre-line; line-height: 1.5;">${savedReport.description}</div>
+                    </div>
+                `;
+                
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Limpiar formulario
+                this.reset();
+                
+                // Enviar correo de confirmación (simulado)
+                sendConfirmationEmail(savedReport);
+                
+            } catch (error) {
+                console.error('Error al guardar el reporte:', error);
+                showNotification('Error al guardar el reporte. Por favor intenta nuevamente.', 'error', 4000);
+            }
+        });
+
+        function sendConfirmationEmail(report) {
+            // Simulación de envío de correo
+            console.log('📧 Enviando correo de confirmación a:', report.customerEmail);
+            console.log('📧 Asunto: Confirmación de Reporte ' + report.id);
+            console.log('📧 Contenido: Reporte registrado exitosamente');
+            
+            // En un sistema real, aquí se haría una petición al servidor
+            setTimeout(() => {
+                console.log('✅ Correo enviado exitosamente a:', report.customerEmail);
+            }, 1000);
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🛠️ Sistema de Soporte RutaTec inicializado');
+            console.log('📧 Contacto: soporte@rutatec.com');
+            console.log('📞 Teléfono: +52 55 1234 5678');
+            console.log('💾 Base de datos cargada');
+            
+            // Configurar botón cerrar modal
+            document.querySelector('.close-modal').addEventListener('click', closeModal);
+            
+            // Cerrar modal con Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+            
+            // Cerrar modal haciendo clic fuera
+            document.getElementById('confirmationModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            
+            // Mostrar mensaje de bienvenida
+            setTimeout(() => {
+                showNotification('Sistema de soporte listo. ¿En qué podemos ayudarte?', 'info', 4000);
+            }, 1000);
+            
+            // Enfocar el primer campo del formulario
+            document.getElementById('reportType').focus();
+        });
+
+        // Animaciones de entrada
+        const animatedElements = [
+            '.contact-info',
+            '.report-section'
+        ];
+        
+        animatedElements.forEach((selector, index) => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.animationDelay = `${0.2 + (index * 0.15)}s`;
+            }
+        });
+    </script>
+</body>
+</html>
