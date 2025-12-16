@@ -338,68 +338,139 @@ def simular_ruta_render(request: SimulacionRequest):
             name="Destino"
         ).add_to(m)
 
-    # 8. Añadir leyenda al mapa
+    # 8. Añadir leyenda al mapa con diseño mejorado (Estilo Header UMB)
+    # 8. Añadir leyenda al mapa con diseño compactado
     legend_html = '''
-<div style="
-    position: fixed; 
-    bottom: 50px; 
-    right: 10px; 
-    width: 220px; 
-    height: auto;
-    background: var(--azul-medio); 
-    border: 2px solid var(--azul-muy-claro); 
-    border-radius: 8px; 
-    padding: 15px; 
-    font-size: 12px; 
-    font-family: Arial, sans-serif;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-    z-index: 9999;
-    color: white;
-">
-    <h4 style="margin: 0 0 10px 0; color: white; font-size: 14px; border-bottom: 1px solid var(--azul-muy-claro); padding-bottom: 5px;">
-        <i class="fas fa-key"></i> Leyenda de Eventos
-    </h4>
-    
-    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ff6b6b; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-            <i class="fas fa-car-crash" style="color: white; font-size: 10px;"></i>
+    <div style="
+        position: fixed; 
+        bottom: 20px; 
+        right: 20px; 
+        width: 190px; /* Reducido de 260px a 190px */
+        background: linear-gradient(135deg, #1c2e4a 0%, #274c77 100%);
+        border: 1px solid #3a7ca5;
+        border-radius: 10px; 
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        z-index: 9999;
+        color: #ffffff;
+        overflow: hidden;
+        backdrop-filter: blur(4px);
+    ">
+        <div style="
+            background: rgba(0, 0, 0, 0.2); 
+            padding: 8px 12px; 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+        ">
+            <i class="fas fa-layer-group" style="color: #3a7ca5; font-size: 12px;"></i>
+            <h4 style="margin: 0; font-size: 13px; font-weight: 600; letter-spacing: 0.5px;">Simbología</h4>
         </div>
-        <span style="color: white;">Accidente</span>
-    </div>
-    
-    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-        <div style="width: 20px; height: 20px; border-radius: 50%; background: #ffa726; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-            <i class="fas fa-wrench" style="color: white; font-size: 10px;"></i>
+        
+        <div style="padding: 10px;">
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <div style="
+                    width: 20px; height: 20px; 
+                    border-radius: 50%; 
+                    background: #ff0000; 
+                    border: 1.5px solid rgba(255,255,255,0.8);
+                    display: flex; align-items: center; justify-content: center; 
+                    margin-right: 8px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                ">
+                    <i class="fas fa-exclamation-triangle" style="color: white; font-size: 9px;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 500;">Peligro</span>
+            </div>
+
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <div style="
+                    width: 20px; height: 20px; 
+                    border-radius: 50%; 
+                    background: #ff6b6b; 
+                    border: 1.5px solid rgba(255,255,255,0.8);
+                    display: flex; align-items: center; justify-content: center; 
+                    margin-right: 8px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                ">
+                    <i class="fas fa-car-crash" style="color: white; font-size: 9px;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 500;">Accidente</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <div style="
+                    width: 20px; height: 20px; 
+                    border-radius: 50%; 
+                    background: #ffa726; 
+                    border: 1.5px solid rgba(255,255,255,0.8);
+                    display: flex; align-items: center; justify-content: center; 
+                    margin-right: 8px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                ">
+                    <i class="fas fa-wrench" style="color: white; font-size: 9px;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 500;">Construcción</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <div style="
+                    width: 20px; height: 20px; 
+                    border-radius: 50%; 
+                    background: #f44336; 
+                    border: 1.5px solid rgba(255,255,255,0.8);
+                    display: flex; align-items: center; justify-content: center; 
+                    margin-right: 8px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                ">
+                    <i class="fas fa-traffic-light" style="color: white; font-size: 9px;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 500;">Congestión</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                <div style="
+                    width: 20px; height: 20px; 
+                    border-radius: 50%; 
+                    background: #000000; 
+                    border: 1.5px solid rgba(255,255,255,0.8);
+                    display: flex; align-items: center; justify-content: center; 
+                    margin-right: 8px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                ">
+                    <i class="fas fa-road" style="color: white; font-size: 9px;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 500;">Cierre</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; margin-bottom: 0;">
+                <div style="
+                    width: 20px; height: 20px; 
+                    border-radius: 50%; 
+                    background: #3f51b5; 
+                    border: 1.5px solid rgba(255,255,255,0.8);
+                    display: flex; align-items: center; justify-content: center; 
+                    margin-right: 8px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+                ">
+                    <i class="fas fa-bus" style="color: white; font-size: 9px;"></i>
+                </div>
+                <span style="font-size: 11px; font-weight: 500;">Tránsito</span>
+            </div>
         </div>
-        <span style="color: white;">Construcción</span>
-    </div>
-    
-    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-        <div style="width: 20px; height: 20px; border-radius: 50%; background: #f44336; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-            <i class="fas fa-traffic-light" style="color: white; font-size: 10px;"></i>
+        
+        <div style="
+            padding: 5px 10px; 
+            background: rgba(0,0,0,0.15); 
+            font-size: 9px; 
+            text-align: center; 
+            color: rgba(255,255,255,0.6);
+        ">
+            <i class="fas fa-mouse-pointer"></i> Click en marcadores
         </div>
-        <span style="color: white;">Congestión</span>
     </div>
-    
-    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-        <div style="width: 20px; height: 20px; border-radius: 50%; background: #000000; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-            <i class="fas fa-road" style="color: white; font-size: 10px;"></i>
-        </div>
-        <span style="color: white;">Cierre</span>
-    </div>
-    
-    <div style="display: flex; align-items: center; margin-bottom: 8px;">
-        <div style="width: 20px; height: 20px; border-radius: 50%; background: #3f51b5; display: flex; align-items: center; justify-content: center; margin-right: 10px;">
-            <i class="fas fa-bus" style="color: white; font-size: 10px;"></i>
-        </div>
-        <span style="color: white;">Tránsito</span>
-    </div>
-    
-    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--azul-muy-claro); color: rgba(255,255,255,0.8); font-size: 10px;">
-        <i class="fas fa-info-circle"></i> Click en marcador para detalles
-    </div>
-</div>
-'''
+    '''
     
     m.get_root().html.add_child(folium.Element(legend_html))
 
