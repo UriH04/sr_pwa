@@ -2,87 +2,102 @@
 import requests
 import networkx as nx
 
-def obtener_datos_ruta(api_key, origen, destino):
+def obtener_ruta_multiparada(api_key, lista_lugares, optimizar=True):
+    """Obtiene ruta optimizada para múltiples paradas"""
     url = "http://www.mapquestapi.com/directions/v2/route"
-    params = {
-        "key": api_key,
-        "from": origen,
-        "to": destino,
-        "routeType": "fastest",
-        "fullShape": "true",
-        "drivingStyle": "normal",
-        # --- PARÁMETROS DE IDIOMA Y UNIDAD ---
-        "unit": "k",        # 'k' = Kilómetros (Por defecto viene en 'm' = Millas)
-        "locale": "es_MX"   # Español de México (Traduce la narrativa)
+    
+    payload = {
+        "locations": lista_lugares,
+        "options": {
+            "routeType": "fastest",
+            "doReverseGeocode": False,
+            "narrativeType": "text",
+            "enhancedNarrative": True,
+            "unit": "k",       
+            "locale": "es_MX", 
+            "routeOptimization": optimizar,
+            "shapeFormat": "raw", 
+            "generalize": 0       
+        }
     }
     
     try:
-        response = requests.get(url, params=params)
+        response = requests.post(f"{url}?key={api_key}", json=payload)
         data = response.json()
         
         if data["info"]["statuscode"] != 0:
-            return [], [], None
-            
-        maniobras = data["route"]["legs"][0]["maneuvers"]
-        shape_points_raw = data["route"]["shape"]["shapePoints"]
-        ruta_precisa = list(zip(shape_points_raw[0::2], shape_points_raw[1::2]))
+            print(f"Error API: {data['info']['messages']}")
+            return [], [], None, []
         
-        # Obtenemos la caja delimitadora (Bounding Box) de la ruta
-        # Formato MapQuest: lat_max, lng_max, lat_min, lng_min
+        todas_maniobras = []
+        todos_puntos_shape = []
+        
+        # 1. Maniobras
+        legs = data["route"]["legs"]
+        for leg in legs:
+            for man in leg["maneuvers"]:
+                todas_maniobras.append(man)
+        
+        # 2. Geometría
+        if "shape" in data["route"] and "shapePoints" in data["route"]["shape"]:
+            shape_raw = data["route"]["shape"]["shapePoints"]
+            todos_puntos_shape = list(zip(shape_raw[0::2], shape_raw[1::2]))
+        
+        # 3. Orden Optimizado
+        orden_optimizado = []
+        if "locations" in data["route"]:
+            for location in data["route"]["locations"]:
+                direccion = f"{location.get('street','')}, {location.get('adminArea5','')}"
+                if 'latLng' in location:
+                    latLng = (location['latLng']['lat'], location['latLng']['lng'])
+                    orden_optimizado.append({'dir': direccion, 'pos': latLng})
+        
+        # 4. BOUNDING BOX (Estándar para tráfico)
         bbox = data["route"]["boundingBox"]
         boundingBox_str = f"{bbox['ul']['lat']},{bbox['ul']['lng']},{bbox['lr']['lat']},{bbox['lr']['lng']}"
         
-        return maniobras, ruta_precisa, boundingBox_str
-
+        return todas_maniobras, todos_puntos_shape, boundingBox_str, orden_optimizado
+    
     except Exception as e:
-        print(f"Error en ruta: {e}")
-        return [], [], None
+        print(f"Error crítico en Dijkstra: {e}")
+        return [], [], None, []
 
-def obtener_incidencias_trafico(api_key, bounding_box):
-    """
-    Consulta la API de Tráfico para obtener accidentes, obras y congestión
-    dentro del área de la ruta.
-    """
-    if not bounding_box:
+def obtener_incidencias_trafico(api_key, bounding_box_str):
+    """Obtiene incidentes de tráfico."""
+    if not bounding_box_str:
         return []
-
+    
     url = "http://www.mapquestapi.com/traffic/v2/incidents"
     params = {
-        "key": api_key,
-        "boundingBox": bounding_box,
-        "filters": "construction,incidents,congestion" # Qué queremos ver
+        "key": api_key, 
+        "boundingBox": bounding_box_str, 
+        "filters": "construction,incidents,congestion"
     }
     
     try:
-        print("   -> Consultando estado del tráfico en tiempo real...")
-        response = requests.get(url, params=params)
-        data = response.json()
-        
-        if "incidents" in data:
-            return data["incidents"]
-        else:
-            return []
-            
+        res = requests.get(url, params=params)
+        return res.json().get("incidents", [])
     except Exception as e:
         print(f"Error obteniendo tráfico: {e}")
         return []
 
 def construir_grafo_logico(maniobras):
-    """Construye el grafo lógico (sin cambios)."""
+    """Construye grafo lógico a partir de maniobras"""
     G = nx.DiGraph()
-    for i in range(len(maniobras) - 1):
+    node_counter = 0
+    
+    for i in range(len(maniobras)):
         actual = maniobras[i]
-        siguiente = maniobras[i+1]
-        id_actual = i
-        id_siguiente = i + 1
-        
         pos_actual = (actual['startPoint']['lat'], actual['startPoint']['lng'])
-        pos_siguiente = (siguiente['startPoint']['lat'], siguiente['startPoint']['lng'])
-        
-        G.add_node(id_actual, pos=pos_actual, desc=actual['narrative'])
-        if i == len(maniobras) - 2:
-             G.add_node(id_siguiente, pos=pos_siguiente, desc=siguiente['narrative'])
-
+        desc = actual['narrative']
         distancia = actual['distance']
-        G.add_edge(id_actual, id_siguiente, weight=distancia)
+        
+        G.add_node(node_counter, pos=pos_actual, desc=desc)
+        
+        if i < len(maniobras) - 1:
+            G.add_edge(node_counter, node_counter + 1, weight=distancia)
+        
+        node_counter += 1
+    
     return G
+

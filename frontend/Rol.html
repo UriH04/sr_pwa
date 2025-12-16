@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" type="text/css" href="Estilos.css">
+    
+    <title>RutaTec - Acceso al Sistema</title>
+    <style>
+        /* ===== VARIABLES Y RESET MEJORADOS ===== */
+        :root {
+            --azul-oscuro: #0a192f;
+            --azul-medio: #1a365d;
+            --azul-principal: #2d7dd2;
+            --azul-claro: #4da1ff;
+            --azul-muy-claro: #e6f2ff;
+            --blanco: #ffffff;
+            --gris-claro: #f8fafc;
+            --verde: #10b981;
+            --degrade-fondo: linear-gradient(135deg, #0a192f 0%, #1a365d 100%);
+            --degrade-tarjeta: linear-gradient(145deg, rgba(26, 54, 93, 0.95), rgba(15, 41, 79, 0.95));
+            --degrade-boton: linear-gradient(135deg, var(--azul-principal), var(--azul-claro));
+            --sombra: 0 8px 32px rgba(0, 0, 0, 0.25);
+            --sombra-elevada: 0 12px 40px rgba(0, 0, 0, 0.35);
+            --borde-fino: 1px solid rgba(255, 255, 255, 0.08);
+            --borde-destacado: 1px solid rgba(77, 161, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--degrade-fondo);
+            color: var(--blanco);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        /* ===== ELEMENTOS DECORATIVOS CSS MEJORADOS ===== */
+        .decoracion {
+            position: fixed;
+            z-index: -1;
+        }
+
+        .circulo {
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(77, 161, 255, 0.1) 0%, transparent 70%);
+            filter: blur(40px);
+        }
+
+        .circulo-1 {
+            width: 400px;
+            height: 400px;
+            top: -150px;
+            right: -100px;
+            opacity: 0.4;
+        }
+
+        .circulo-2 {
+            width: 300px;
+            height: 300px;
+            bottom: 50px;
+            left: -100px;
+            opacity: 0.3;
+        }
+
+        .circulo-3 {
+            width: 250px;
+            height: 250px;
+            top: 60%;
+            right: 10%;
+            opacity: 0.2;
+        }
+
+        .linea {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, rgba(77, 161, 255, 0.1), transparent);
+            height: 1px;
+            width: 100%;
+            top: 50%;
+            z-index: -1;
+        }
+
+        .linea-1 {
+            transform: rotate(45deg);
+        }
+
+        .linea-2 {
+            transform: rotate(-30deg);
+        }
+
+        /* ===== ANIMACIONES MEJORADAS ===== */
+        @keyframes aparecerSuave {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes deslizarDerecha {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes brilloSutil {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL MEJORADO ===== */
+        .contenedor {
+            text-align: center;
+            background: var(--degrade-tarjeta);
+            padding: 60px 50px;
+            border-radius: 24px;
+            box-shadow: var(--sombra-elevada);
+            max-width: 520px;
+            width: 100%;
+            margin-bottom: 60px;
+            border: var(--borde-fino);
+            position: relative;
+            overflow: hidden;
+            animation: aparecerSuave 0.8s ease-out;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .contenedor::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--azul-principal), var(--verde));
+        }
+
+        .contenedor::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(77, 161, 255, 0.1), transparent 50%);
+            pointer-events: none;
+        }
+
+        /* ===== TÍTULOS MEJORADOS ===== */
+        .titulo-principal {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--blanco) 0%, var(--azul-muy-claro) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitulo {
+            color: var(--azul-muy-claro);
+            margin-bottom: 50px;
+            font-size: 1.15rem;
+            font-weight: 400;
+            opacity: 0.9;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ===== GRUPO DE BOTONES MEJORADO ===== */
+        .grupo-botones1 {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .boton1-acceso {
+            padding: 22px 30px;
+            border: none;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: none;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--blanco);
+            border: var(--borde-destacado);
+            background: rgba(26, 54, 93, 0.7);
+        }
+
+        .boton1-acceso:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(77, 161, 255, 0.4);
+            background: rgba(26, 54, 93, 0.9);
+        }
+
+        .boton1-acceso:active {
+            transform: translateY(-1px);
+            transition: transform 0.1s;
+        }
+
+        .boton1-admin {
+            animation: deslizarDerecha 0.6s ease-out 0.2s both;
+        }
+
+        .boton1-admin:hover {
+            background: linear-gradient(135deg, rgba(26, 54, 93, 0.9), rgba(21, 44, 77, 0.9));
+        }
+
+        .boton1-admin::before {
+            content: "👨‍💼";
+            font-size: 1.4rem;
+        }
+
+        .boton1-repartidor {
+            animation: deslizarDerecha 0.6s ease-out 0.4s both;
+        }
+
+        .boton1-repartidor:hover {
+            background: linear-gradient(135deg, rgba(45, 125, 210, 0.2), rgba(26, 54, 93, 0.9));
+        }
+
+        .boton1-repartidor::before {
+            content: "🚚";
+            font-size: 1.4rem;
+        }
+
+        /* ===== EFECTO HOVER MEJORADO PARA BOTONES ===== */
+        .boton1-acceso::after {
+            content: '→';
+            position: absolute;
+            right: 25px;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .boton1-acceso:hover::after {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* ===== CONTENEDOR LOGO (SIN MODIFICACIONES) ===== */
+        .contenedor-logo {
+            position: relative;
+            margin-top: 40px;
+        }
+
+        .logo-flotante {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--degrade-boton);
+            border: 5px solid var(--azul-claro);
+            box-shadow: 
+                var(--sombra),
+                0 0 0 10px rgba(52, 152, 219, 0.2),
+                0 0 0 20px rgba(26, 58, 95, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: flotarLogo 4s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            
+           
+            background-image: url('img/logo.jpg');
+            background-size: 150% 140%; 
+            background-position: center;
+        }
+
+        .logo-flotante:hover {
+            transform: scale(1.05);
+            animation: latido 1s ease-in-out;
+        }
+
+        .logo-flotante::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), );
+            transform: rotate(45deg);
+            animation: resplandor 6s ease-in-out infinite;
+        }
+
+        .sombra-logo {
+            width: 120px;
+            height: 25px;
+            background: rgba(26, 58, 95, 0.4);
+            border-radius: 50%;
+            margin: 25px auto 0;
+            animation: sombraLogo 4s ease-in-out infinite;
+            filter: blur(10px);
+        }
+
+        /* ===== PIE DE PÁGINA MEJORADO ===== */
+        .pie-pagina {
+            margin-top: 50px;
+            color: var(--azul-muy-claro);
+            text-align: center;
+            font-size: 0.9rem;
+            padding: 25px 30px;
+            max-width: 500px;
+            border-top: var(--borde-destacado);
+            animation: aparecerSuave 0.8s ease-out 0.6s both;
+            opacity: 0.8;
+        }
+
+        .pie-pagina p {
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .etiqueta-sistema {
+            display: inline-block;
+            background: rgba(77, 161, 255, 0.1);
+            color: var(--azul-muy-claro);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: var(--borde-destacado);
+            backdrop-filter: blur(10px);
+            animation: brilloSutil 4s ease-in-out infinite;
+        }
+
+        /* ===== INDICADOR DE SEGURIDAD ===== */
+        .indicador-seguridad {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 25px;
+            font-size: 0.85rem;
+            color: var(--verde);
+            opacity: 0.8;
+        }
+
+        .indicador-seguridad::before {
+            content: "🔒";
+            font-size: 1rem;
+        }
+
+        /* ===== EFECTO DE ILUMINACIÓN MEJORADO ===== */
+        .efecto-iluminacion {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(77, 161, 255, 0.05), transparent 40%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ===== RESPONSIVE MEJORADO ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .contenedor {
+                padding: 45px 35px;
+                margin-bottom: 40px;
+                border-radius: 20px;
+            }
+            
+            .titulo-principal {
+                font-size: 2.3rem;
+            }
+            
+            .subtitulo {
+                font-size: 1.05rem;
+                margin-bottom: 40px;
+            }
+            
+            .boton1-acceso {
+                padding: 20px 25px;
+                font-size: 1rem;
+            }
+            
+            .pie-pagina {
+                padding: 20px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contenedor {
+                padding: 35px 25px;
+                border-radius: 18px;
+            }
+            
+            .titulo-principal {
+                font-size: 2rem;
+            }
+            
+            .boton1-acceso {
+                padding: 18px 20px;
+                font-size: 0.95rem;
+                gap: 10px;
+            }
+            
+            .boton1-acceso::after {
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Elementos decorativos mejorados -->
+    <div class="decoracion circulo circulo-1"></div>
+    <div class="decoracion circulo circulo-2"></div>
+    <div class="decoracion circulo circulo-3"></div>
+    <div class="decoracion linea linea-1"></div>
+    <div class="decoracion linea linea-2"></div>
+    <div class="efecto-iluminacion"></div>
+    
+    <!-- Contenedor Principal Mejorado -->
+    <div class="contenedor">
+        <h1 class="titulo-principal">RutaTec</h1>
+        <p class="subtitulo">Sistema Inteligente de Gestión Logística</p>
+        
+        <div class="grupo-botones1">
+            <a class="boton1-acceso boton1-admin" href="Administrador/ACCAdmin.html">
+                Acceso Administrador
+            </a>
+            
+            <a class="boton1-acceso boton1-repartidor" href="Repartidor/ACCSesion.html">
+                Acceso Repartidor
+            </a>
+        </div>
+        
+        <div class="indicador-seguridad">
+            Sistema seguro - Conexión encriptada
+        </div>
+    </div>
+
+    <!-- Logo Flotante (sin modificaciones) -->
+    <div class="contenedor-logo">
+        <div class="logo-flotante" id="logoRutaTec">
+            <div class="imagen-logo"></div>
+        </div>
+        <div class="sombra-logo"></div>
+    </div>
+
+    <!-- Pie de Página Mejorado -->
+    <footer class="pie-pagina">
+        <p>© 2025 RutaTec. Todos los derechos reservados.</p>
+        <p>Sistema especializado en optimización logística y distribución inteligente.</p>
+        <div class="etiqueta-sistema">Versión 2.0 | Sistema en Tiempo Real</div>
+    </footer>
+
+    <script>
+        // ===== EFECTOS MEJORADOS AL CARGAR LA PÁGINA =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Efecto de carga progresiva
+            const elementos = document.querySelectorAll('.contenedor, .contenedor-logo, .pie-pagina');
+            elementos.forEach((elemento, index) => {
+                elemento.style.opacity = '0';
+                setTimeout(() => {
+                    elemento.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+                    elemento.style.opacity = '1';
+                }, index * 150);
+            });
+
+            // Efecto hover mejorado para botones
+            document.querySelectorAll('.boton1-acceso').forEach(boton => {
+                boton.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px)';
+                });
+                
+                boton.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+                
+                boton.addEventListener('click', function(e) {
+                    // Prevenir comportamiento por defecto temporalmente para mostrar efecto
+                    e.preventDefault();
+                    
+                    // Efecto visual de clic
+                    this.style.transform = 'translateY(-1px) scale(0.99)';
+                    
+                    // Agregar indicador de carga
+                    const textoOriginal = this.innerHTML;
+                    this.innerHTML = `<span style="display:inline-block; animation: spin 0.8s linear infinite;">⟳</span> Cargando...`;
+                    this.style.pointerEvents = 'none';
+                    
+                    // Restaurar y redirigir después de breve pausa
+                    setTimeout(() => {
+                        this.innerHTML = textoOriginal;
+                        this.style.pointerEvents = 'auto';
+                        this.style.transform = 'translateY(-3px)';
+                        
+                        // Redirigir a la página correspondiente
+                        const href = this.getAttribute('href');
+                        window.location.href = href;
+                    }, 800);
+                });
+            });
+
+            // Efecto para el logo
+            const logo = document.getElementById('logoRutaTec');
+            logo.addEventListener('click', function() {
+                this.style.transform = 'scale(1.08)';
+                this.style.transition = 'transform 0.3s ease';
+                
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 300);
+            });
+
+            // Mostrar notificación de bienvenida sutil
+            setTimeout(() => {
+                const notificacion = document.createElement('div');
+                notificacion.style.cssText = `
+                    position: fixed;
+                    bottom: 30px;
+                    right: 30px;
+                    background: rgba(10, 25, 47, 0.9);
+                    color: var(--azul-muy-claro);
+                    padding: 16px 24px;
+                    border-radius: 12px;
+                    border-left: 3px solid var(--azul-principal);
+                    animation: aparecerSuave 0.4s ease-out;
+                    z-index: 1000;
+                    max-width: 280px;
+                    font-size: 0.9rem;
+                    backdrop-filter: blur(10px);
+                    border: var(--borde-fino);
+                    display: none;
+                    box-shadow: var(--sombra);
+                `;
+                notificacion.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                        <span style="font-size: 1.2rem;">👋</span>
+                        <strong style="font-weight: 600;">Bienvenido</strong>
+                    </div>
+                    <div>Selecciona tu rol para acceder al sistema.</div>
+                `;
+                document.body.appendChild(notificacion);
+                
+                // Mostrar notificación
+                setTimeout(() => {
+                    notificacion.style.display = 'block';
+                    
+                    // Ocultar después de 4 segundos
+                    setTimeout(() => {
+                        notificacion.style.opacity = '0';
+                        notificacion.style.transform = 'translateY(10px)';
+                        notificacion.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        
+                        setTimeout(() => {
+                            if (notificacion.parentNode) {
+                                document.body.removeChild(notificacion);
+                            }
+                        }, 500);
+                    }, 4000);
+                }, 1000);
+            }, 1200);
+        });
+
+        // Agregar animación de spin
+        const estiloSpin = document.createElement('style');
+        estiloSpin.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(estiloSpin);
+    </script>
+</body>
+</html>

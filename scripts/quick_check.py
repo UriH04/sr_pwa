@@ -38,12 +38,12 @@ except Exception as e:
     print(f"[ERROR] FastAPI: {e}")
     all_ok = False
 
-try:
-    from backend.core.dijkstra import obtener_datos_ruta
-    print("[OK]  Modulo dijkstra")
-except Exception as e:
-    print(f"[ERROR] Dijkstra: {e}")
-    all_ok = False
+#try:
+ #   from backend.core.dijkstra import obtener_datos_ruta
+ #   print("[OK]  Modulo dijkstra")
+#except Exception as e:
+ #   print(f"[ERROR] Dijkstra: {e}")
+ #   all_ok = False
 
 # 3. Resultado
 print("\n" + "="*40)

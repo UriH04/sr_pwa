@@ -1,6 +1,5 @@
 # module
-database/
+simpwadb.session.sql
+req.txt
 
-# package
-seed.sql
 

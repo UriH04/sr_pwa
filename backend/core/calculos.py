@@ -1,10 +1,24 @@
+import os
 from sqlalchemy import create_engine, text
+from dotenv import load_dotenv
+
+# Cargar variables de entorno
+load_dotenv()
 
 # ==========================================================
-# 1. Conexión a la base de datos
+# 1. Conexión a la base de datos (usando pymysql)
 # ==========================================================
 
-engine = create_engine("mysql+mysqlconnector://root:Mysqldb20@localhost/simpwadb")
+# Obtener configuración desde variables de entorno
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = os.getenv("DB_PORT", "3306")
+DB_NAME = os.getenv("DB_NAME", "simpwadb")
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "mysqlumb")
+
+# Usar pymysql en lugar de mysqlconnector
+DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+engine = create_engine(DATABASE_URL)
 
 
 # ==========================================================
@@ -21,6 +35,21 @@ def calcular_pedido(id_pedido, distancia_km):
       - JSON con consumo, costo, emisiones, etc.
     """
 
+    # Si no hay motor de base de datos, usar valores por defecto
+    if engine is None:
+        return {
+            "pedido": id_pedido,
+            "vehiculo": "gasolina",
+            "distancia_km": distancia_km,
+            "peso_kg": 10.0,
+            "volumen_m3": 1.0,
+            "consumo": distancia_km / 12,  # 12 km por litro
+            "costo_total": distancia_km / 12 * 22.5,  # $22.5 por litro
+            "emisiones_kg": distancia_km / 12 * 2.31,
+            "tiempo_estimado_min": (distancia_km / 40) * 60,
+            "mensaje": "Usando valores por defecto (BD no disponible)"
+        }
+
     # --------------------------
     # 1) OBTENER DATOS DEL PEDIDO
     # --------------------------
@@ -30,8 +59,12 @@ def calcular_pedido(id_pedido, distancia_km):
         WHERE id_pedido = :id
     """)
 
-    with engine.connect() as conn:
-        pedido = conn.execute(query_pedido, {"id": id_pedido}).fetchone()
+    try:
+        with engine.connect() as conn:
+            pedido = conn.execute(query_pedido, {"id": id_pedido}).fetchone()
+    except Exception as e:
+        print(f"Error consultando pedido: {e}")
+        return {"error": f"Error de base de datos: {str(e)}"}
 
     if pedido is None:
         return {"error": "El pedido no existe"}
@@ -43,7 +76,6 @@ def calcular_pedido(id_pedido, distancia_km):
     # --------------------------
     # 2) OBTENER DATOS DEL VEHÍCULO
     # --------------------------
-
     query_vehiculo = text("""
         SELECT tipo, rendimiento_gasolina, rendimiento_electrico,
                precio_gasolina, precio_kwh, factor_emisiones_gasolina,
@@ -52,8 +84,12 @@ def calcular_pedido(id_pedido, distancia_km):
         WHERE id_vehiculo = :id
     """)
 
-    with engine.connect() as conn:
-        vehiculo = conn.execute(query_vehiculo, {"id": id_vehiculo}).fetchone()
+    try:
+        with engine.connect() as conn:
+            vehiculo = conn.execute(query_vehiculo, {"id": id_vehiculo}).fetchone()
+    except Exception as e:
+        print(f"Error consultando vehículo: {e}")
+        return {"error": f"Error de base de datos: {str(e)}"}
 
     if vehiculo is None:
         return {"error": "El vehículo asignado no existe"}
@@ -64,7 +100,6 @@ def calcular_pedido(id_pedido, distancia_km):
     # --------------------------
     # 3) CÁLCULOS DEPENDIENDO DEL VEHÍCULO
     # --------------------------
-
     if tipo == "gasolina":
         rendimiento = vehiculo.rendimiento_gasolina   # km por litro
         consumo = distancia_km / rendimiento
@@ -104,7 +139,6 @@ def calcular_pedido(id_pedido, distancia_km):
     # --------------------------
     # 5) FORMAR EL JSON DE RESPUESTA
     # --------------------------
-
     resultado = {
         "pedido": id_pedido,
         "vehiculo": tipo,

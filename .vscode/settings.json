@@ -1,0 +1,23 @@
+{
+    "cSpell.enabledNotifications": {
+        "Maximum Word Length Exceeded": false,
+        "Lines too Long": false,
+        "Average Word Length too Long": false
+    },
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "simpwadb",
+            "database": "simpwadb",
+            "username": "root"
+        }
+    ]
+}

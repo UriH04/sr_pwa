@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RutaTec - El algoritmo que lleva a tu destino</title>
+    <link rel="stylesheet" type="text/css" href="/Estilos.css">
+       <style>
+    
+     /* Reset y configuraciones base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c1b33 0%, #1a3a5f 50%, #0c1b33 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Elementos decorativos de fondo */
+        .bg-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(52, 152, 219, 0.1);
+            z-index: -1;
+        }
+
+        .bg-element-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -100px;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.15) 0%, transparent 70%);
+        }
+
+        .bg-element-2 {
+            width: 200px;
+            height: 200px;
+            bottom: 100px;
+            left: -50px;
+            background: radial-gradient(circle, rgba(0, 150, 255, 0.1) 0%, transparent 70%);
+        }
+
+        .bg-element-3 {
+            width: 150px;
+            height: 150px;
+            top: 40%;
+            right: 20%;
+            background: radial-gradient(circle, rgba(52, 152, 219, 0.2) 0%, transparent 70%);
+        }
+
+        /* Contenedor principal */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            z-index: 1;
+        }
+
+        /* Logo y título */
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .logo {
+           
+        
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
+                        0 0 0 10px rgba(52, 152, 219, 0.2),
+                        0 0 0 20px rgba(26, 58, 95, 0.1);
+           
+            width: 130px;
+            height: 130px;
+            background-image: url('/img/logo.jpg');
+            background-size: 150% 140%; 
+            background-position: center;
+            
+            
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(5deg);
+        }
+
+        
+        
+
+        
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(to right, #3498db, #bbdefb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: #bbdefb;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 300;
+        }
+
+        /* Contenedor de bienvenida */
+        .welcome-container {
+            text-align: center;
+            max-width: 600px;
+            margin-bottom: 50px;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .welcome-title::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, transparent, #3498db, transparent);
+            bottom: -10px;
+            left: 0;
+            border-radius: 2px;
+        }
+
+        .welcome-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #e3f2fd;
+            background: rgba(26, 58, 95, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Contenedor de botones */
+        .buttons-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        /* Estilos de botones */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 35px;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg, #1a3a5f, #3498db);
+            color: white;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #3498db, #1a3a5f);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #111, #333);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-register:hover {
+            background: linear-gradient(135deg, #333, #111);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-icon {
+            margin-right: 12px;
+            font-size: 1.3rem;
+            display: inline-block;
+        }
+
+        .btn-login .btn-icon::before {
+            content: '→';
+            font-weight: bold;
+        }
+
+        .btn-register .btn-icon::before {
+            content: '📝';
+            display: inline-block;
+        }
+
+      
+
+        
+
+        
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 25px 20px;
+            margin-top: 50px;
+            border-top: 2px solid #3498db;
+            z-index: 1;
+        }
+
+        footer p {
+            font-size: 1rem;
+            color: #bbdefb;
+            letter-spacing: 1px;
+        }
+
+        /* Animaciones */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(52, 152, 219, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
+            }
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(calc(var(--random-x) * 1px));
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                min-width: 250px;
+            }
+            
+            .stats-container {
+                gap: 20px;
+            }
+            
+            .stat-item {
+                min-width: 140px;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .logo-icon {
+                font-size: 2.8rem;
+            }
+            
+            .welcome-text {
+                font-size: 1rem;
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 15px 25px;
+                min-width: 220px;
+            }
+        }
+    
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    </style>
+</head>
+<body>
+    <!-- Elementos decorativos de fondo CSS -->
+    <div class="bg-element bg-element-1"></div>
+    <div class="bg-element bg-element-2"></div>
+    <div class="bg-element bg-element-3"></div>
+    
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">
+                <span class="logo-icon"></span>
+            </div>
+            <div>
+                <h1>RutaTec</h1>
+                <p class="tagline">El algoritmo que te lleva a tu destino</p>
+            </div>
+        </div>
+        
+        <div class="welcome-container">
+            <h2 class="welcome-title">¡Bienvenido!</h2>
+            <p class="welcome-text">
+                Somos tu empresa confiable para facilitar la entrega de paquetes. 
+                Con tecnología avanzada y algoritmos inteligentes, optimizamos cada ruta 
+                para garantizar que tus envíos lleguen a tiempo y de manera segura.
+            </p>
+        </div>
+        
+        <div class="buttons-container">
+            <a class="btn btn-login" href="Iniciar-secion.html">
+                <span class="btn-icon"></span>
+                Iniciar Sesión
+            </a>
+            
+            <a class="btn btn-register" href="registro.html">
+                <span class="btn-icon"></span>
+            Crear cuenta
+            </a>
+        </div>
+        
+        
+    </div>
+    
+    <footer>
+        <p id="footer-text">© 2025 RutaTec - Todos los derechos reservados.</p>
+    </footer>
+    
+    <script>
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animación de contadores
+            function animateCounter(elementId, finalValue, duration = 2000) {
+                const element = document.getElementById(elementId);
+                if (!element) return;
+                
+                const startValue = 0;
+                const increment = finalValue / (duration / 16);
+                let currentValue = startValue;
+                
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        element.textContent = finalValue.toLocaleString() + '+';
+                        clearInterval(timer);
+                    } else {
+                        element.textContent = Math.floor(currentValue).toLocaleString();
+                    }
+                }, 16);
+            }
+
+            // Iniciar contadores
+            animateCounter('clientes-count', 1247);
+            animateCounter('entregas-count', 856);
+            animateCounter('rutas-count', 523);
+
+            // Efecto hover para el logo
+            const logo = document.querySelector('.logo');
+            if (logo) {
+                logo.addEventListener('mouseenter', function() {
+                    this.style.animation = 'pulse 1.5s infinite';
+                });
+                
+                logo.addEventListener('mouseleave', function() {
+                    this.style.animation = '';
+                });
+            }
+
+            // Efectos para botones
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    // Crear efecto de onda
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.6);
+                        transform: scale(0);
+                        animation: ripple-animation 0.6s linear;
+                        width: ${size}px;
+                        height: ${size}px;
+                        top: ${y}px;
+                        left: ${x}px;
+                        pointer-events: none;
+                    `;
+                    
+                    this.appendChild(ripple);
+                    
+                    // Eliminar el elemento después de la animación
+                    setTimeout(() => {
+                        if (ripple.parentNode === this) {
+                            this.removeChild(ripple);
+                        }
+                    }, 600);
+                });
+            });
+
+            // Actualizar hora en tiempo real en el footer
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('es-MX', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+                
+                const dateString = now.toLocaleDateString('es-MX', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                const footer = document.getElementById('footer-text');
+                if (footer) {
+                    footer.innerHTML = `© 2025 RutaTec - ${dateString} ${timeString} - Todos los derechos reservados.`;
+                }
+            }
+            
+            // Actualizar cada minuto
+            setInterval(updateTime, 60000);
+            updateTime();
+
+            // Efecto de partículas en el fondo
+            function createParticles() {
+                const particlesContainer = document.createElement('div');
+                particlesContainer.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: 0;
+                `;
+                document.body.appendChild(particlesContainer);
+                
+                // Crear partículas
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('div');
+                    const randomX = Math.random() * 100 - 50;
+                    particle.style.cssText = `
+                        position: absolute;
+                        background: rgba(52, 152, 219, ${Math.random() * 0.3});
+                        border-radius: 50%;
+                        width: ${Math.random() * 10 + 2}px;
+                        height: ${Math.random() * 10 + 2}px;
+                        top: ${Math.random() * 100}vh;
+                        left: ${Math.random() * 100}vw;
+                        animation: float ${Math.random() * 20 + 10}s linear infinite;
+                        --random-x: ${randomX};
+                    `;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+            
+            // Inicializar partículas
+            createParticles();
+        });
+    </script>
+</body>
+</html>

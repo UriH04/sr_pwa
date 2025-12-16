@@ -1,0 +1,1709 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Rutas UMB Cuautitlán</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <style>
+        /* Variables de colores consistentes con el login */
+        :root {
+            --azul-oscuro: #0a1128;
+            --azul-medio: #1c2e4a;
+            --azul-claro: #274c77;
+            --azul-muy-claro: #3a7ca5;
+            --verde: #2ecc71;
+            --blanco: #ffffff;
+            --gris-claro: #f5f7fa;
+            --sombra: rgba(10, 17, 40, 0.15);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            color: var(--blanco);
+        }
+        
+        .container-fluid {
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-claro) 100%);
+            color: var(--blanco);
+            padding: 15px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        
+        .header-content {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            margin: 5px 0 0;
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .header-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+        
+        .header-slider label {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            white-space: nowrap;
+        }
+        
+        .slider-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--verde);
+            font-weight: 600;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--verde);
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .back-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--azul-muy-claro);
+            color: var(--blanco);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .back-button:hover {
+            background: var(--azul-muy-claro);
+            transform: translateX(-3px);
+        }
+        
+        /* ====================
+           DESTINATION SELECTOR CON SCROLL FIJO
+           ==================== */
+        .destination-selector {
+            background-color: rgba(28, 46, 74, 0.8);
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--azul-muy-claro);
+            height: 220px; /* Altura fija para el contenedor */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Ocultar overflow del contenedor principal */
+        }
+        
+        .destination-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            flex: 1;
+            overflow: hidden; /* Para que el contenido interno maneje el scroll */
+        }
+        
+        /* Contenedor interno para los destinos con scroll */
+        .destinations-wrapper {
+            flex: 1;
+            overflow-y: auto; /* Scroll vertical interno */
+            overflow-x: hidden;
+            padding-right: 5px; /* Espacio para el scrollbar */
+            max-height: 160px; /* Altura máxima del área de destinos */
+            margin-bottom: 10px;
+        }
+        
+        /* Personalizar scrollbar del destinations-wrapper */
+        .destinations-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .destinations-wrapper::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .destinations-wrapper::-webkit-scrollbar-thumb {
+            background: var(--azul-muy-claro);
+            border-radius: 4px;
+        }
+        
+        .destinations-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--verde);
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: var(--blanco);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid var(--azul-muy-claro);
+            padding: 12px 15px;
+            transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--blanco);
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 0.25rem rgba(46, 204, 113, 0.25);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--azul-muy-claro) 0%, var(--verde) 100%);
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            color: var(--blanco);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            min-width: 200px;
+            align-self: flex-end;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+            background: linear-gradient(135deg, var(--verde) 0%, var(--azul-muy-claro) 100%);
+        }
+        
+        /* Estilo para el botón de agregar destino */
+        .add-destination-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed var(--azul-muy-claro);
+            color: var(--blanco);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+            flex-shrink: 0; /* Evitar que se reduzca */
+        }
+        
+        .add-destination-btn:hover {
+            background: rgba(58, 124, 165, 0.2);
+            border-color: var(--verde);
+        }
+        
+        .destination-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .destination-item .form-control {
+            flex: 1;
+        }
+        
+        .remove-destination {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid #ff6b6b;
+            color: #ff6b6b;
+            width: 40px;
+            height: 46px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .remove-destination:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+        
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+        
+        .sidebar {
+            width: 480px;
+            background: linear-gradient(180deg, rgba(28, 46, 74, 0.95) 0%, rgba(10, 17, 40, 0.98) 100%);
+            border-right: 1px solid var(--azul-muy-claro);
+            padding: 25px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            backdrop-filter: blur(15px);
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--azul-muy-claro);
+            border-radius: 4px;
+        }
+        
+        .map-container {
+            flex: 1;
+            position: relative;
+            background: rgba(10, 17, 40, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .map-placeholder {
+            text-align: center;
+            padding: 40px;
+            max-width: 500px;
+        }
+        
+        .map-placeholder i {
+            font-size: 80px;
+            color: var(--azul-muy-claro);
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+        
+        .map-placeholder h3 {
+            color: var(--blanco);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .map-placeholder p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .route-summary {
+            background: linear-gradient(135deg, rgba(39, 76, 119, 0.8) 0%, rgba(28, 46, 74, 0.9) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--verde);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .route-summary h5 {
+            color: var(--blanco);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .route-summary p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+        
+        .events-section {
+            margin-top: 25px;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .section-header h5 {
+            color: var(--blanco);
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* ====================
+           INSTRUCCIONES SIN SCROLL
+           ==================== */
+        .instructions-section {
+            margin-top: 25px;
+        }
+        
+        .instructions-section h5 {
+            color: var(--blanco);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions-list {
+            /* SIN max-height ni overflow - eliminados */
+            padding-right: 5px;
+        }
+        
+        /* ====================
+           ESTILOS PARA EVENTOS (SIN FILTROS)
+           ==================== */
+        .events-list {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .events-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .events-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+        }
+        
+        .events-list::-webkit-scrollbar-thumb {
+            background: var(--azul-muy-claro);
+            border-radius: 3px;
+        }
+        
+        .event-detail {
+            background: linear-gradient(135deg, rgba(39, 76, 119, 0.6) 0%, rgba(28, 46, 74, 0.8) 100%);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+        
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .event-type-badge {
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .event-severity-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .event-title {
+            font-weight: 600;
+            color: var(--blanco);
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+        
+        .event-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .event-distance {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .event-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .event-action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--azul-muy-claro);
+            color: var(--blanco);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .event-action-btn:hover {
+            background: var(--azul-muy-claro);
+        }
+        
+        .instruction-detail {
+            background: linear-gradient(135deg, rgba(39, 76, 119, 0.6) 0%, rgba(28, 46, 74, 0.8) 100%);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--azul-muy-claro);
+        }
+        
+        .instruction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .instruction-step {
+            font-weight: 600;
+            color: var(--verde);
+            font-size: 1rem;
+        }
+        
+        .instruction-distance {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+            background: rgba(0, 0, 0, 0.2);
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        
+        .instruction-text {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+        }
+        
+        .instruction-coords {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend {
+            background: linear-gradient(135deg, rgba(39, 76, 119, 0.8) 0%, rgba(28, 46, 74, 0.9) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .legend h6 {
+            color: var(--blanco);
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 0;
+        }
+        
+        .legend-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 6px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .legend-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(28, 46, 74, 0.9) 0%, rgba(10, 17, 40, 0.9) 100%);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        
+        .spinner-border {
+            width: 4rem;
+            height: 4rem;
+            border-width: 0.3rem;
+            color: var(--verde);
+        }
+        
+        /* Estilos para el modal */
+        .modal-content {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-oscuro) 100%);
+            border: 2px solid var(--azul-muy-claro);
+            border-radius: 15px;
+            color: var(--blanco);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid var(--azul-muy-claro);
+            padding: 20px;
+        }
+        
+        .modal-title {
+            color: var(--blanco);
+            font-weight: 600;
+        }
+        
+        .btn-close {
+            filter: invert(1) brightness(2);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .modal-footer {
+            border-top: 1px solid var(--azul-muy-claro);
+            padding: 20px;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.2) 100%);
+            border: 2px solid var(--azul-muy-claro);
+            color: var(--blanco);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        /* Panel de estadísticas */
+        .stats-panel {
+            background: linear-gradient(135deg, rgba(39, 76, 119, 0.8) 0%, rgba(28, 46, 74, 0.9) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--verde);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Efectos decorativos similares al login */
+        .decorative-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(46, 204, 113, 0.1) 0%, transparent 70%);
+            z-index: 0;
+        }
+        
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+        }
+        
+        .circle-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(58, 124, 165, 0.1) 0%, transparent 70%);
+        }
+        
+        .decorative-line {
+            position: fixed;
+            background: linear-gradient(90deg, transparent, var(--azul-muy-claro), transparent);
+            z-index: 0;
+        }
+        
+        .line-1 {
+            width: 100%;
+            height: 2px;
+            top: 20%;
+            opacity: 0.3;
+        }
+        
+        .line-2 {
+            width: 100%;
+            height: 1px;
+            bottom: 30%;
+            opacity: 0.2;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .header-controls {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+                padding: 15px;
+            }
+            
+            .header-content {
+                width: 100%;
+            }
+            
+            .header-controls {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+            
+            .header-slider {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .back-button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .destination-selector {
+                height: auto;
+                max-height: 300px;
+            }
+            
+            .destination-form {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                width: 100%;
+            }
+            
+            .btn-primary {
+                width: 100%;
+                margin-top: 10px;
+            }
+            
+            .destination-item {
+                flex-direction: column;
+            }
+            
+            .remove-destination {
+                width: 100%;
+                height: 40px;
+            }
+            
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                max-height: 50vh;
+                border-right: none;
+                border-bottom: 2px solid var(--azul-muy-claro);
+            }
+            
+            .map-container {
+                height: 50vh;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header-slider label {
+                font-size: 0.8rem;
+            }
+            
+            .slider-value {
+                font-size: 0.8rem;
+                min-width: 35px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    <div class="decorative-line line-1"></div>
+    <div class="decorative-line line-2"></div>
+    
+    <div class="container-fluid">
+        <div class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-route"></i> Sistema de Rutas UMB Cuautitlán</h1>
+                <p>Visualización de rutas hacia las UES del Estado de México</p>
+            </div>
+            
+            <div class="header-controls">
+                <div class="header-slider">
+                    <label for="sidebarSize"><i class="fas fa-arrows-alt-h"></i> Tamaño panel:</label>
+                    <div class="slider-container">
+                        <input type="range" id="sidebarSize" min="350" max="600" value="480" step="10">
+                        <span class="slider-value" id="sidebarSizeValue">480px</span>
+                    </div>
+                </div>
+                
+                <a href="../PanelADM.html" class="back-button">
+                    <i class="fas fa-arrow-left"></i> Volver al Inicio
+                </a>
+            </div>
+        </div>
+        
+        <!-- DESTINATION SELECTOR CON SCROLL VERTICAL -->
+        <div class="destination-selector">
+            <div class="destination-form">
+                <div class="form-group">
+                    <label for="origin"><i class="fas fa-map-marker-alt"></i> Origen</label>
+                    <input type="text" class="form-control" id="origin" value="UMB Cuautitlán, Edo. México" readonly>
+                    <small class="text-muted" style="color: rgba(255, 255, 255, 0.6) !important;">Manzana 005, Loma Bonita, 54879 Cuautitlán, Méx.</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="destinations"><i class="fas fa-flag-checkered"></i> Destinos</label>
+                    <div class="destinations-wrapper" id="destinationsContainer">
+                        <!-- Los destinos se agregarán dinámicamente aquí -->
+                        <div class="destination-item">
+                            <select class="form-control destination-select" data-index="0">
+                                <option value="">Selecciona un destino</option>
+                                <optgroup label="REGIÓN NORTE">
+                                    <option value="Km 2.5, Carretera al Ejido la Soledad, Ejido La Soledad, 50300 Villa de Acambay de Ruíz Castañeda, Méx.">UES Acambay</option>
+                                    <option value="Angel Castillo López S/N, A Santiago Oxtempan, 50600 El Oro de Hidalgo, Méx.">UES El Oro</option>
+                                    <option value="Ignacio Zaragoza, 50400 Temascalcingo de José María Velasco, Méx.">UES Temascalcingo</option>
+                                    <option value="Km. 7, Carretera Jilotepec-Chapa de Mota, Ejido de Jilotepec, 54240 Jilotepec de Molina Enríquez, Méx.">UES Jilotepec</option>
+                                    <option value="Camino Real S/N,, Barrio Primero, 50550 San Bartolo Morelos, Méx.">UES Morelos</option>
+                                    <option value="Domicilio Conocido S/N, Ixtlahuaca, 50740 Barrio de San Pedro la Cabecera, Méx.">UES Ixtlahuaca</option>
+                                    <option value="AVENIDA UNIVERSIDAD SN, 50660 Colonia Las Tinajas, Méx.">UES San José del Rincón</option>
+                                    <option value="Km.1, Carretera San Felipe Santiago, 50800 Méx.">UES Jiquipilco</option>
+                                    <option value="Km. 47 Carretera Federal Toluca-Zitácuaro, 50960 San Agustín Berros, Méx.">UES Villa Victoria</option>
+                                </optgroup>
+                                <optgroup label="REGIÓN ORIENTE">
+                                    <option value="Independencia 1, Sta Isabel Ixtapan, 56300 Santa Isabel Ixtapan, Méx.">UES Atenco</option>
+                                    <option value="Carr Federal México-Cuautla Km 14 s/n, La Candelaria tlapala, 56641 Chalco de Díaz Covarrubias, Méx.">UES Chalco</option>
+                                    <option value="Avenida Hacienda La Escondida 589, Geovillas Santa Barbara, 56630 Ixtapaluca, Méx.">UES Ixtapaluca</option>
+                                    <option value="S. Agustín S/N, El Pino, 56400 San Isidro, Méx.">UES La Paz</option>
+                                </optgroup>
+                                <optgroup label="REGIÓN VALLE DE TOLUCA">
+                                    <option value="De las Flores S/N, La Magdalena Chichicaspa, 52773 Huixquilucan de Degollado, Méx.">UES Huixquilucan</option>
+                                    <option value="Cto de la Industria Pte S/N, Isidro Fabela, 52004 Lerma de Villada, Méx.">UES Lerma</option>
+                                    <option value="Domicilio Conocido S/N, San Diego Alcalá, 50850 Temoaya, Méx.">UES Temoaya</option>
+                                    <option value="Los Hidalgos 233, Sin Nombre, 52316 Tenango de Arista, Méx.">UES Tenango del Valle</option>
+                                    <option value="Calle Colorines S/N,, Deportiva de Xalatlaco, 52680 Xalatlaco, Méx.">UES Xalatlaco</option>
+                                </optgroup>
+                                <optgroup label="REGIÓN VALLE DE MÉXICO">
+                                    <option value="Av Insurgentes, Fraccionamiento Las Americas, Las Américas, 55070 Ecatepec de Morelos, Méx.">UES Ecatepec</option>
+                                    <option value="Calle Blvrd Jardines Mz 66, Los Heroes Tecamac, 55764 Ojo de Agua, Méx.">UES Tecámac</option>
+                                    <option value="Calle Av. del Convento S/N, El Trebol, 54614 Tepotzotlán, Méx.">UES Tepotzotlán</option>
+                                    <option value="San Antonio s/n, Villa Esmeralda, 54910 Tultitlán de Mariano Escobedo, Méx.">UES Tultitlán</option>
+                                    <option value="Calle al Quemado S/N, Fracción I del Ex Ejido, 54980 San Pablo de las Salinas, Méx.">UES Tultepec</option>
+                                    <option value="Carretera Villa del Carbon, KM 34.5, 54300 Villa del Carbón, Méx.">UES Villa</option>
+                                </optgroup>
+                                <optgroup label="REGIÓN SUR">
+                                    <option value="Domicilio Conocido, Paraje la Chimenea, Comunidad Agua Fría, Paraje la Chimenea, 51860 Almoloya de Alquisiras, Méx.">UES Almoloya de Alquisiras</option>
+                                    <option value="Domicilio conocido, San Luis, 51700 Coatepec Harinas, Méx.">UES Coatepec Harinas</option>
+                                    <option value="Carretera Toluca–Sultepec, Libramiento Sultepec–La Goleta S/N,, Barrio Camino Nacional, 51600 Sultepec de Pedro Ascencio de Alquisiras, Méx.">UES Sultepec</option>
+                                    <option value="Domicilio Conocido, El Rodeo, Tejupilco de Hidalgo, 51400 Méx.">UES Tejupilco</option>
+                                    <option value="Carretera Los Cuervos-Arcelia km 35, San Pedro, Limón, 51585 Tlatlaya, Méx">UES Tlatlaya</option>
+                                </optgroup>
+                            </select>
+                            <div class="remove-destination" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" class="add-destination-btn" id="addDestination">
+                        <i class="fas fa-plus"></i> Agregar otro destino
+                    </button>
+                </div>
+                
+                <div class="form-group d-flex align-items-end">
+                    <button class="btn btn-primary" id="calculateRoute">
+                        <i class="fas fa-calculator"></i> Calcular Ruta
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="loading" id="loading">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Calculando ruta...</span>
+                    </div>
+                    <p class="mt-3">Calculando la mejor ruta...</p>
+                </div>
+                
+                <div id="routeInfo">
+                    <div class="route-summary">
+                        <h5><i class="fas fa-info-circle"></i> Resumen de la Ruta</h5>
+                        <p><strong>Origen:</strong> UMB Cuautitlán</p>
+                        <p><strong>Destinos:</strong> <span id="destinosNombres">Selecciona al menos un destino</span></p>
+                        
+                        <div class="route-info mt-3">
+                            <p><i class="fas fa-steps me-2"></i><strong>Paradas:</strong> <span id="totalStops">0</span></p>
+                            <p><i class="fas fa-exclamation-triangle me-2"></i><strong>Eventos:</strong> <span id="totalEvents">0</span></p>
+                            <p><i class="fas fa-ruler-combined me-2"></i><strong>Distancia:</strong> <span id="totalDistance">0 km</span></p>
+                            <p><i class="fas fa-clock me-2"></i><strong>Tiempo estimado:</strong> <span id="totalTime">0 min</span></p>
+                        </div>
+                    </div>
+                    
+                    <!-- PANEL DE ESTADÍSTICAS (se agregará dinámicamente) -->
+                    
+                    <div class="events-section">
+                        <div class="section-header">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Eventos en la Ruta</h5>
+                        </div>
+                        
+                        <!-- NOTA: ELIMINAMOS LOS BOTONES DE FILTRO -->
+                        
+                        <div class="events-list" id="eventsList">
+                            <div class="text-center py-4" style="color: rgba(255, 255, 255, 0.7);">
+                                <i class="fas fa-route fa-2x mb-3" style="opacity: 0.5;"></i>
+                                <p>Selecciona un destino para ver los eventos en la ruta</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="legend">
+                        <h6><i class="fas fa-layer-group"></i> Simbología</h6>
+                        
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(90deg, var(--azul-muy-claro), var(--verde));"></div>
+                            <div class="legend-label">Ruta sugerida</div>
+                        </div>
+                        
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--verde); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-university" style="color: white; font-size: 12px;"></i>
+                            </div>
+                            <div class="legend-label">UMB Cuautitlán</div>
+                        </div>
+                        
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #ff6b6b; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-flag" style="color: white; font-size: 12px;"></i>
+                            </div>
+                            <div class="legend-label">Destino</div>
+                        </div>
+
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #ff5722; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-exclamation-triangle" style="color: white; font-size: 10px;"></i>
+                            </div>
+                            <div class="legend-label">Peligro</div>
+                        </div>
+                        
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #ff6b6b; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-car-crash" style="color: white; font-size: 10px;"></i>
+                            </div>
+                            <div class="legend-label">Accidente</div>
+                        </div>
+                        
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #ffa726; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-wrench" style="color: white; font-size: 10px;"></i>
+                            </div>
+                            <div class="legend-label">Construcción</div>
+                        </div>
+                        
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #f44336; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-traffic-light" style="color: white; font-size: 10px;"></i>
+                            </div>
+                            <div class="legend-label">Congestión</div>
+                        </div>
+                        
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #000000; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-road" style="color: white; font-size: 10px;"></i>
+                            </div>
+                            <div class="legend-label">Cierre</div>
+                        </div>
+                    </div>
+                    
+                    <div class="instructions-section">
+                        <h5><i class="fas fa-directions"></i> Instrucciones Principales</h5>
+                        <div class="instructions-list" id="mainInstructions">
+                            <div class="text-center py-3" style="color: rgba(255, 255, 255, 0.7);">
+                                <i class="fas fa-info-circle fa-2x mb-2" style="opacity: 0.5;"></i>
+                                <p>La ruta se mostrará aquí después del cálculo</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary w-100 mt-3" id="viewAllInstructions">
+                            <i class="fas fa-directions"></i> Ver Todas las Instrucciones
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="map-container" style="position: relative; width: 100%; height: 100%;">
+                <iframe id="mapaFrame" style="width: 100%; height: 100%; border: none; display: none;"></iframe>
+    
+                <div id="mapPlaceholder" class="map-placeholder">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Área del Mapa</h3>
+                    <p>Selecciona uno o más destinos y calcula la ruta para visualizar el mapa aquí.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="instructionsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-directions me-2"></i>Instrucciones Detalladas de la Ruta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="route-info mb-4 p-3" style="background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+                        <p class="mb-1"><strong><i class="fas fa-map-marker-alt me-2"></i>Origen:</strong> UMB Cuautitlán</p>
+                        <p class="mb-1"><strong><i class="fas fa-flag-checkered me-2"></i>Destinos:</strong> <span id="modalDestinos"></span></p>
+                        <p class="mb-0"><strong><i class="fas fa-ruler-combined me-2"></i>Distancia total:</strong> <span id="modalDistance"></span></p>
+                    </div>
+                    <div class="instructions-list" id="modalInstructions" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" id="printInstructions">
+                        <i class="fas fa-print me-2"></i>Imprimir Instrucciones
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Variables globales
+        let eventosActuales = [];
+        let instruccionesActuales = [];
+        let destinationCount = 1;
+        
+        // Mapeo de direcciones a nombres de UES
+        const uesNombres = {
+            'Km 2.5, Carretera al Ejido la Soledad, Ejido La Soledad, 50300 Villa de Acambay de Ruíz Castañeda, Méx.': 'UES Acambay',
+            'Angel Castillo López S/N, A Santiago Oxtempan, 50600 El Oro de Hidalgo, Méx.': 'UES El Oro',
+            'Ignacio Zaragoza, 50400 Temascalcingo de José María Velasco, Méx.': 'UES Temascalcingo',
+            'Km. 7, Carretera Jilotepec-Chapa de Mota, Ejido de Jilotepec, 54240 Jilotepec de Molina Enríquez, Méx.': 'UES Jilotepec',
+            'Camino Real S/N,, Barrio Primero, 50550 San Bartolo Morelos, Méx.': 'UES Morelos',
+            'Domicilio Conocido S/N, Ixtlahuaca, 50740 Barrio de San Pedro la Cabecera, Méx.': 'UES Ixtlahuaca',
+            'AVENIDA UNIVERSIDAD SN, 50660 Colonia Las Tinajas, Méx.': 'UES San José del Rincón',
+            'Km.1, Carretera San Felipe Santiago, 50800 Méx.': 'UES Jiquipilco',
+            'Km. 47 Carretera Federal Toluca-Zitácuaro, 50960 San Agustín Berros, Méx.': 'UES Villa Victoria',
+            'Independencia 1, Sta Isabel Ixtapan, 56300 Santa Isabel Ixtapan, Méx.': 'UES Atenco',
+            'Carr Federal México-Cuautla Km 14 s/n, La Candelaria tlapala, 56641 Chalco de Díaz Covarrubias, Méx.': 'UES Chalco',
+            'Avenida Hacienda La Escondida 589, Geovillas Santa Barbara, 56630 Ixtapaluca, Méx.': 'UES Ixtapaluca',
+            'S. Agustín S/N, El Pino, 56400 San Isidro, Méx.': 'UES La Paz',
+            'De las Flores S/N, La Magdalena Chichicaspa, 52773 Huixquilucan de Degollado, Méx.': 'UES Huixquilucan',
+            'Cto de la Industria Pte S/N, Isidro Fabela, 52004 Lerma de Villada, Méx.': 'UES Lerma',
+            'Domicilio Conocido S/N, San Diego Alcalá, 50850 Temoaya, Méx.': 'UES Temoaya',
+            'Los Hidalgos 233, Sin Nombre, 52316 Tenango de Arista, Méx.': 'UES Tenango del Valle',
+            'Calle Colorines S/N,, Deportiva de Xalatlaco, 52680 Xalatlaco, Méx.': 'UES Xalatlaco',
+            'Av Insurgentes, Fraccionamiento Las Americas, Las Américas, 55070 Ecatepec de Morelos, Méx.': 'UES Ecatepec',
+            'Calle Blvrd Jardines Mz 66, Los Heroes Tecamac, 55764 Ojo de Agua, Méx.': 'UES Tecámac',
+            'Calle Av. del Convento S/N, El Trebol, 54614 Tepotzotlán, Méx.': 'UES Tepotzotlán',
+            'San Antonio s/n, Villa Esmeralda, 54910 Tultitlán de Mariano Escobedo, Méx.': 'UES Tultitlán',
+            'Calle al Quemado S/N, Fracción I del Ex Ejido, 54980 San Pablo de las Salinas, Méx.': 'UES Tultepec',
+            'Carretera Villa del Carbon, KM 34.5, 54300 Villa del Carbón, Méx.': 'UES Villa',
+            'Domicilio Conocido, Paraje la Chimenea, Comunidad Agua Fría, Paraje la Chimenea, 51860 Almoloya de Alquisiras, Méx.': 'UES Almoloya de Alquisiras',
+            'Domicilio conocido, San Luis, 51700 Coatepec Harinas, Méx.': 'UES Coatepec Harinas',
+            'Carretera Toluca–Sultepec, Libramiento Sultepec–La Goleta S/N,, Barrio Camino Nacional, 51600 Sultepec de Pedro Ascencio de Alquisiras, Méx.': 'UES Sultepec',
+            'Domicilio Conocido, El Rodeo, Tejupilco de Hidalgo, 51400 Méx.': 'UES Tejupilco',
+            'Carretera Los Cuervos-Arcelia km 35, San Pedro, Limón, 51585 Tlatlaya, Méx': 'UES Tlatlaya'
+        };
+        
+        // ====================
+        // 1. CONTROL DEL SLIDER DEL HEADER
+        // ====================
+        
+        $('#sidebarSize').on('input', function() {
+            const value = $(this).val();
+            $('#sidebarSizeValue').text(value + 'px');
+            $('.sidebar').css('width', value + 'px');
+        });
+        
+        // ====================
+        // 2. FUNCIONALIDAD DE DESTINOS MÚLTIPLES CON SCROLL
+        // ====================
+        
+        // Función para obtener nombre de UES por dirección
+        function getUesNombre(direccion) {
+            return uesNombres[direccion] || direccion;
+        }
+        
+        // Función para agregar un nuevo destino
+        $('#addDestination').click(function() {
+            destinationCount++;
+            const newDestination = `
+                <div class="destination-item">
+                    <select class="form-control destination-select" data-index="${destinationCount - 1}">
+                        <option value="">Selecciona un destino</option>
+                        ${$('.destination-select').first().find('optgroup').map(function() {
+                            return $(this).prop('outerHTML');
+                        }).get().join('')}
+                    </select>
+                    <div class="remove-destination">
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+            `;
+            $('#destinationsContainer').append(newDestination);
+            
+            // Mostrar botón de eliminar en todos menos el primero
+            $('.destination-item').each(function(index) {
+                if (index > 0) {
+                    $(this).find('.remove-destination').show();
+                }
+            });
+            
+            // Desplazar scroll al fondo para ver el nuevo destino
+            const container = $('.destinations-wrapper');
+            container.animate({
+                scrollTop: container[0].scrollHeight
+            }, 300);
+        });
+        
+        // Función para eliminar un destino
+        $(document).on('click', '.remove-destination', function() {
+            if (destinationCount > 1) {
+                $(this).closest('.destination-item').remove();
+                destinationCount--;
+                
+                // Reindexar los selects
+                $('.destination-select').each(function(index) {
+                    $(this).attr('data-index', index);
+                });
+                
+                // Ocultar botón de eliminar si solo queda uno
+                if (destinationCount === 1) {
+                    $('.remove-destination').hide();
+                }
+            }
+        });
+        
+        // Función para obtener todos los destinos seleccionados
+        function getSelectedDestinations() {
+            const destinos = [];
+            $('.destination-select').each(function() {
+                const valor = $(this).val();
+                if (valor) {
+                    destinos.push(valor);
+                }
+            });
+            return destinos;
+        }
+        
+        // Función para obtener nombres de destinos seleccionados
+        function getSelectedDestinationsNames() {
+            const nombres = [];
+            $('.destination-select').each(function() {
+                const valor = $(this).val();
+                if (valor) {
+                    const nombre = $(this).find('option:selected').text();
+                    nombres.push(nombre);
+                }
+            });
+            return nombres;
+        }
+        
+        // ====================
+        // 3. FUNCIONES PARA PROCESAR Y MOSTRAR INSTRUCCIONES (SIN SCROLL)
+        // ====================
+        
+        function procesarInstrucciones(instrucciones) {
+            const mainInstructions = $('#mainInstructions');
+            mainInstructions.empty();
+            
+            if (!instrucciones || instrucciones.length === 0) {
+                mainInstructions.append(`
+                    <div class="text-center py-3" style="color: rgba(255, 255, 255, 0.7);">
+                        <i class="fas fa-info-circle fa-2x mb-2" style="opacity: 0.5;"></i>
+                        <p>No hay instrucciones disponibles</p>
+                    </div>
+                `);
+                return;
+            }
+            
+            // Tomar solo las primeras 5 instrucciones para el panel principal
+            const instruccionesMostrar = instrucciones.slice(0, 5);
+            
+            instruccionesMostrar.forEach(inst => {
+                const instructionItem = `
+                    <div class="instruction-detail">
+                        <div class="instruction-header">
+                            <div class="instruction-step">Paso ${inst.orden}</div>
+                            <div class="instruction-distance">${inst.distancia}</div>
+                        </div>
+                        <div class="instruction-text">${inst.texto}</div>
+                        <div class="instruction-coords">
+                            <i class="fas fa-map-marker-alt"></i> ${inst.coordenadas || 'Coordenadas no disponibles'}
+                        </div>
+                    </div>
+                `;
+                mainInstructions.append(instructionItem);
+            });
+            
+            // Guardar todas las instrucciones para el modal
+            window.todasInstrucciones = instrucciones;
+        }
+        
+        // ====================
+        // 4. FUNCIONES PARA PROCESAR Y MOSTRAR EVENTOS (SIN FILTROS)
+        // ====================
+        
+        function procesarEventos(eventos) {
+            eventosActuales = eventos;
+            renderizarListaEventos();
+            actualizarEstadisticasEventos(eventos);
+        }
+        
+        function renderizarEvento(evento) {
+            const color = getColorPorTipo(evento.type);
+            const icono = getIconoPorTipo(evento.type);
+            
+            // Determinar color del borde izquierdo según severidad
+            let borderColor = '#ffc107'; // Amarillo por defecto
+            if (evento.severidad >= 4) borderColor = '#f44336'; // Rojo para severidad alta
+            else if (evento.severidad >= 3) borderColor = '#ff9800'; // Naranja para severidad media
+            
+            // Color del badge según tipo
+            let badgeColor = color;
+            let badgeTextColor = 'white';
+            
+            return `
+                <div class="event-detail" style="border-left-color: ${borderColor};" 
+                     data-type="${evento.type}" 
+                     data-location="${evento.location}"
+                     data-severity="${evento.severidad}">
+                    
+                    <div class="event-header">
+                        <div class="event-type-badge" style="background: ${badgeColor}; color: ${badgeTextColor};">
+                            <i class="fas fa-${icono}"></i> ${evento.tipo_texto}
+                        </div>
+                        <div class="event-severity-badge" style="background: ${getColorSeveridad(evento.severidad)};">
+                            Severidad: ${evento.severidad}/5
+                        </div>
+                    </div>
+                    
+                    <div class="event-title">${evento.title}</div>
+                    
+                    <div class="event-description">
+                        ${evento.description}
+                    </div>
+                    
+                    <div class="event-footer">
+                        <div class="event-distance">
+                            <i class="fas fa-ruler-combined"></i>
+                            ${evento.distancia_a_ruta_km ? `A ${evento.distancia_a_ruta_km} km de la ruta` : 'En la ruta'}
+                        </div>
+                        
+                        <div class="event-actions">
+                            <button class="event-action-btn zoom-to-event">
+                                <i class="fas fa-search-location"></i> Zoom
+                            </button>
+                            <button class="event-action-btn view-details">
+                                <i class="fas fa-info-circle"></i> Detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function getColorPorTipo(tipo) {
+            const colores = {
+                'construction': '#ffa726', // Naranja
+                'accident': '#f44336',     // Rojo
+                'congestion': '#ff5722',   // Rojo oscuro
+                'closure': '#000000',      // Negro
+                'hazard': '#ff9800',       // Naranja claro
+                'event': '#9c27b0',        // Púrpura
+                'weather': '#29b6f6',      // Azul claro
+                'transit': '#3f51b5',      // Azul
+                'other': '#78909c'         // Gris
+            };
+            return colores[tipo] || '#78909c';
+        }
+        
+        function getIconoPorTipo(tipo) {
+            const iconos = {
+                'construction': 'wrench',
+                'accident': 'car-crash',
+                'congestion': 'traffic-light',
+                'closure': 'road',
+                'hazard': 'exclamation-triangle',
+                'event': 'calendar',
+                'weather': 'cloud-rain',
+                'transit': 'bus',
+                'other': 'exclamation-circle'
+            };
+            return iconos[tipo] || 'exclamation-circle';
+        }
+        
+        function getColorSeveridad(severidad) {
+            if (severidad >= 5) return '#d32f2f';
+            if (severidad >= 4) return '#f44336';
+            if (severidad >= 3) return '#ff9800';
+            if (severidad >= 2) return '#ffc107';
+            return '#4caf50';
+        }
+        
+        function renderizarListaEventos() {
+            const eventsList = $('#eventsList');
+            
+            eventsList.empty();
+            
+            if (eventosActuales.length === 0) {
+                eventsList.append(`
+                    <div class="text-center py-4" style="color: rgba(255, 255, 255, 0.7);">
+                        <i class="fas fa-search fa-2x mb-3" style="opacity: 0.5;"></i>
+                        <p>Calcula una ruta para ver eventos de tráfico</p>
+                    </div>
+                `);
+            } else {
+                // Ordenar por severidad (más grave primero)
+                eventosActuales.sort((a, b) => b.severidad - a.severidad);
+                
+                eventosActuales.forEach(evento => {
+                    eventsList.append(renderizarEvento(evento));
+                });
+            }
+        }
+        
+        function actualizarEstadisticasEventos(eventos) {
+            const total = eventos.length;
+            
+            // Contar por tipo
+            const conteoTipos = {};
+            let severidadTotal = 0;
+            let eventosCercanos = 0;
+            
+            eventos.forEach(evento => {
+                const tipo = evento.tipo_texto;
+                conteoTipos[tipo] = (conteoTipos[tipo] || 0) + 1;
+                severidadTotal += evento.severidad;
+                
+                // Contar eventos cercanos (a menos de 1 km)
+                if (evento.distancia_a_ruta_km && evento.distancia_a_ruta_km < 1) {
+                    eventosCercanos++;
+                }
+            });
+            
+            const severidadPromedio = total > 0 ? (severidadTotal / total).toFixed(1) : 0;
+            
+            // Actualizar estadísticas en el panel de resumen
+            $('#totalEvents').text(total);
+            if (total > 0) {
+                $('#totalEvents').append(` <small style="color: rgba(255, 255, 255, 0.6);">(Prom. severidad: ${severidadPromedio}/5)</small>`);
+            }
+            
+            // Mostrar panel de estadísticas detalladas
+            mostrarPanelEstadisticas(eventos, conteoTipos, severidadPromedio, eventosCercanos);
+        }
+        
+        function mostrarPanelEstadisticas(eventos, conteoTipos, severidadPromedio, eventosCercanos) {
+            // Crear o actualizar panel de estadísticas
+            let statsPanel = $('.stats-panel');
+            if (statsPanel.length === 0) {
+                $('.route-summary').after(`
+                    <div class="stats-panel">
+                        <h5><i class="fas fa-chart-bar"></i> Estadísticas de Eventos</h5>
+                        <div class="stats-grid" id="statsGrid"></div>
+                    </div>
+                `);
+                statsPanel = $('.stats-panel');
+            }
+            
+            const statsGrid = $('#statsGrid');
+            statsGrid.empty();
+            
+            // Agregar estadísticas
+            const stats = [
+                { value: eventos.length, label: 'Total Eventos', icon: 'exclamation-triangle', color: '#f44336' },
+                { value: severidadPromedio, label: 'Severidad Promedio', icon: 'shield-alt', color: '#ff9800' },
+                { value: eventosCercanos, label: 'Eventos Cercanos (<1km)', icon: 'ruler-combined', color: '#4caf50' },
+                { value: Object.keys(conteoTipos).length, label: 'Tipos Diferentes', icon: 'layer-group', color: '#2196f3' }
+            ];
+            
+            stats.forEach(stat => {
+                statsGrid.append(`
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: ${stat.color};">${stat.value}</div>
+                        <div class="stat-label">
+                            <i class="fas fa-${stat.icon} me-1"></i> ${stat.label}
+                        </div>
+                    </div>
+                `);
+            });
+        }
+        
+        // ====================
+        // 5. MODIFICAR LA FUNCIÓN DE CALCULAR RUTA
+        // ====================
+        
+        $('#calculateRoute').click(function() {
+            const origen = "Manzana 005, Loma Bonita, 54879 Cuautitlán, Méx.";
+            const destinos = getSelectedDestinations();
+            const destinosNombres = getSelectedDestinationsNames();
+
+            if (destinos.length === 0) {
+                alert('Por favor selecciona al menos un destino');
+                return;
+            }
+            
+            // Mostrar loading
+            $('#loading').show();
+            $('#routeInfo').hide();
+            $('#mapPlaceholder').show();
+            $('#mapaFrame').hide();
+            
+            // Construir lista de lugares: origen + destinos
+            const lugares = [origen, ...destinos];
+            
+            // 1. Primero calcular la ruta multiparada
+            fetch('http://localhost:8000/ruta/ruta-multiparada', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    lugares: lugares,
+                    optimizar: true
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Error ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(datosRuta => {
+                // Actualizar la interfaz con los datos obtenidos
+                $('#destinosNombres').text(destinosNombres.join(', '));
+                
+                // Actualizar estadísticas básicas
+                if (datosRuta) {
+                    $('#totalStops').text(destinos.length);
+                    $('#totalEvents').text(datosRuta.eventos_trafico || 0);
+                    $('#totalDistance').text(datosRuta.distancia_total_km + ' km');
+                    $('#totalTime').text(Math.round(datosRuta.distancia_total_km * 1.5) + ' min');
+                }
+                
+                // Ocultar loading y mostrar info
+                $('#loading').hide();
+                $('#routeInfo').show();
+                
+                // 2. Ahora cargar el mapa en el iframe para múltiples destinos
+                return fetch('http://localhost:8000/simulacion/render-multi', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'text/html'
+                    },
+                    body: JSON.stringify({
+                        origen: origen,
+                        destinos: destinos
+                    })
+                });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Error ${response.status}: ${text}`);
+                    });
+                }
+                return response.text();
+            })
+            .then(htmlMapa => {
+                const frame = document.getElementById('mapaFrame');
+                $('#mapPlaceholder').hide();
+                $(frame).show();
+                
+                const doc = frame.contentWindow.document;
+                doc.open();
+                doc.write(htmlMapa);
+                doc.close();
+                
+                // Esperar a que el mapa se cargue y extraer los datos
+                setTimeout(() => {
+                    try {
+                        const frameWindow = frame.contentWindow;
+                        if (frameWindow.datosRuta) {
+                            // Procesar instrucciones y eventos del mapa
+                            procesarInstrucciones(frameWindow.datosRuta.instrucciones || []);
+                            procesarEventos(frameWindow.datosRuta.eventos || []);
+                            
+                            console.log('Datos procesados del mapa:', frameWindow.datosRuta);
+                        } else {
+                            console.warn('No se encontraron datos en el mapa');
+                        }
+                    } catch (error) {
+                        console.error('Error al extraer datos del mapa:', error);
+                    }
+                }, 2000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                $('#loading').hide();
+                $('#routeInfo').show();
+                alert('Hubo un error al calcular la ruta: ' + error.message);
+            });
+
+        const rutaParaGPS = {
+            origen: origen,
+            destinos: destinos,
+            destinosNombres: destinosNombres,
+            fecha: new Date().toISOString(),
+            distancia: datosRuta.distancia_total_km || 0
+        };
+            
+        });
+
+        localStorage.setItem('ultimaRutaMulti', JSON.stringify(rutaParaGPS));
+        console.log('Ruta guardada para GPS:', rutaParaGPS);
+        
+        // ====================
+        // 6. EVENTOS PARA LOS BOTONES DE EVENTOS
+        // ====================
+        
+        $(document).on('click', '.zoom-to-event', function() {
+            const eventItem = $(this).closest('.event-detail');
+            const location = eventItem.data('location');
+            
+            if (location) {
+                const [lat, lng] = location.split(',').map(coord => parseFloat(coord.trim()));
+                const frame = document.getElementById('mapaFrame');
+                if (frame && frame.contentWindow) {
+                    try {
+                        if (frame.contentWindow.zoomToLocation) {
+                            frame.contentWindow.zoomToLocation(lat, lng);
+                        }
+                        if (frame.contentWindow.map) {
+                            frame.contentWindow.map.setView([lat, lng], 15);
+                        }
+                    } catch (e) {
+                        console.error('Error centrando mapa:', e);
+                    }
+                }
+            }
+        });
+        
+        $(document).on('click', '.view-details', function() {
+            const eventItem = $(this).closest('.event-detail');
+            const tipo = eventItem.find('.event-type-badge').text();
+            const severidad = eventItem.data('severity');
+            const location = eventItem.data('location');
+            const descripcion = eventItem.find('.event-description').text();
+            
+            // Mostrar modal con detalles
+            alert(`📋 DETALLES DEL EVENTO\n\n` +
+                  `📌 Tipo: ${tipo}\n` +
+                  `⚠️ Severidad: ${severidad}/5\n` +
+                  `📍 Ubicación: ${location}\n\n` +
+                  `📝 Descripción:\n${descripcion}`);
+        });
+        
+        // ====================
+        // 7. FUNCIONALIDAD PARA EL MODAL DE INSTRUCCIONES
+        // ====================
+        
+        $('#viewAllInstructions').click(function() {
+            const modalInstructions = $('#modalInstructions');
+            modalInstructions.empty();
+            
+            const destinosNombres = getSelectedDestinationsNames();
+            $('#modalDestinos').text(destinosNombres.join(', '));
+            $('#modalDistance').text($('#totalDistance').text());
+            
+            if (window.todasInstrucciones && window.todasInstrucciones.length > 0) {
+                window.todasInstrucciones.forEach(inst => {
+                    modalInstructions.append(`
+                        <div class="instruction-detail mb-3">
+                            <div class="instruction-header">
+                                <div class="instruction-step">Paso ${inst.orden}</div>
+                                <div class="instruction-distance">${inst.distancia}</div>
+                            </div>
+                            <div class="instruction-text">${inst.texto}</div>
+                            <div class="instruction-coords">
+                                <i class="fas fa-map-marker-alt"></i> ${inst.coordenadas || 'Coordenadas no disponibles'}
+                            </div>
+                        </div>
+                    `);
+                });
+            } else {
+                modalInstructions.html('<p class="text-center text-white py-4">No hay instrucciones disponibles.</p>');
+            }
+            
+            const modal = new bootstrap.Modal(document.getElementById('instructionsModal'));
+            modal.show();
+        });
+        
+        $('#printInstructions').click(function() {
+            window.print();
+        });
+        
+        // ====================
+        // 8. INICIALIZACIÓN
+        // ====================
+        
+        // Inicializar el slider
+        $('#sidebarSize').trigger('input');
+        
+        // Asegurar que solo el primer destino no tenga botón de eliminar
+        $('.destination-item').first().find('.remove-destination').hide();
+    });
+    </script>
+</body>
+</html>

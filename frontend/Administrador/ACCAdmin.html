@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/Estilos.css">
+    <title>Acceso Administrador - RutaTec</title>
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --azul-fuerte: #0c1b33;
+            --azul-medio: #1a3a5f;
+            --azul-claro: #3498db;
+            --azul-muy-claro: #bbdefb;
+            --negro: #111111;
+            --negro-claro: #1e1e1e;
+            --blanco: #ffffff;
+            --gris-claro: #e8f4fc;
+            --verde: #2ecc71;
+            --rojo: #e74c3c;
+            --amarillo: #f1c40f;
+            --naranja: #e67e22;
+            --degrade-fondo: linear-gradient(135deg, var(--azul-fuerte) 0%, var(--azul-medio) 50%, var(--azul-fuerte) 100%);
+            --degrade-boton: linear-gradient(135deg, var(--azul-medio), var(--azul-claro));
+            --degrade-admin: linear-gradient(135deg, #1a3a5f, #2c3e50);
+            --sombra: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --sombra-fuerte: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .a {
+            background: var(--degrade-fondo);
+            color: var(--blanco);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== ELEMENTOS DECORATIVOS CSS ===== */
+        .decoracion {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .circulo {
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--azul-claro), transparent 70%);
+        }
+
+        .circulo-1 {
+            width: 350px;
+            height: 350px;
+            top: -150px;
+            right: -100px;
+            animation: flotar 20s ease-in-out infinite;
+        }
+
+        .circulo-2 {
+            width: 250px;
+            height: 250px;
+            bottom: 50px;
+            left: -100px;
+            animation: flotar 25s ease-in-out infinite reverse;
+        }
+
+        .circulo-3 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 10%;
+            animation: flotar 30s ease-in-out infinite;
+        }
+
+        .linea {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--azul-claro), transparent);
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .linea-1 {
+            transform: rotate(45deg);
+            animation: moverLinea 40s linear infinite;
+        }
+
+        .linea-2 {
+            transform: rotate(-30deg);
+            animation: moverLinea 35s linear infinite reverse;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes flotar {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-25px) rotate(5deg);
+            }
+        }
+
+        @keyframes moverLinea {
+            0% {
+                transform: rotate(45deg) translateX(-100%);
+            }
+            100% {
+                transform: rotate(45deg) translateX(100%);
+            }
+        }
+
+        @keyframes aparecer {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(39, 174, 96, 0); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== CONTENEDOR ADMINISTRADOR ===== */
+        .contenedor-admin {
+            background: rgba(26, 58, 95, 0.95);
+            border-radius: 20px;
+            box-shadow: var(--sombra-fuerte);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            border: 3px solid var(--azul-claro);
+            position: relative;
+            animation: aparecer 0.8s ease-out;
+            backdrop-filter: blur(15px);
+        }
+
+        .contenedor-admin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--azul-claro), var(--verde), var(--azul-claro));
+            z-index: 1;
+        }
+
+        /* ===== ENCABEZADO ADMINISTRADOR ===== */
+        .encabezado-admin {
+            background: linear-gradient(135deg, var(--azul-medio), #2c3e50);
+            color: var(--blanco);
+            padding: 35px 25px;
+            text-align: center;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .encabezado-admin::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.8), transparent);
+        }
+
+        .encabezado-admin h1 {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            color: var(--blanco);
+        }
+
+        .encabezado-admin h1::before {
+            content: "🛡️";
+            font-size: 1.8rem;
+        }
+
+        .encabezado-admin p {
+            opacity: 0.9;
+            font-size: 1rem;
+            color: var(--azul-muy-claro);
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== CONTENEDOR DE BOTONES ===== */
+        .contenedor-botones {
+            padding: 20px 25px 0 25px;
+            display: flex;
+            gap: 15px;
+            background: rgba(26, 58, 95, 0.95);
+            animation: aparecer 0.8s ease-out 0.4s both;
+        }
+
+        /* ===== BOTÓN REGRESAR ===== */
+        .boton-regresar {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: var(--azul-muy-claro);
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            border-radius: 12px;
+            padding: 14px 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .boton-regresar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .boton-regresar:hover {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            border-color: var(--azul-claro);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(26, 58, 95, 0.3);
+            color: var(--blanco);
+        }
+
+        .boton-regresar:hover::before {
+            left: 100%;
+        }
+
+        .boton-regresar:active {
+            transform: translateY(-1px);
+        }
+
+        .boton-regresar::after {
+            content: "🏠";
+            font-size: 1rem;
+        }
+
+        /* ===== CUERPO ADMINISTRADOR ===== */
+        .cuerpo-admin {
+            padding: 35px;
+        }
+
+        /* ===== INFORMACIÓN DE SEGURIDAD ===== */
+        .info-seguridad {
+            background: rgba(52, 152, 219, 0.15);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px solid var(--azul-claro);
+            border-left: 5px solid var(--azul-medio);
+            box-shadow: 0 4px 15px rgba(26, 58, 95, 0.2);
+            animation: aparecer 0.8s ease-out 0.2s both;
+        }
+
+        .info-seguridad h3 {
+            color: var(--azul-muy-claro);
+            margin-bottom: 18px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .info-seguridad h3::before {
+            content: "🔐";
+        }
+
+        .info-seguridad ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-seguridad li {
+            padding: 10px 0;
+            color: var(--azul-muy-claro);
+            position: relative;
+            padding-left: 35px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .info-seguridad li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-size: 1rem;
+            color: var(--verde);
+            width: 24px;
+            height: 24px;
+            background: rgba(46, 204, 113, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* ===== GRUPO DE FORMULARIO ===== */
+        .grupo-formulario {
+            margin-bottom: 30px;
+            animation: aparecer 0.8s ease-out 0.4s both;
+        }
+
+        .etiqueta-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--azul-muy-claro);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .etiqueta-input::before {
+            content: "";
+            font-size: 1.1rem;
+        }
+
+        .etiqueta-input[for="adminUsername"]::before {
+            content: "👤";
+        }
+
+        .etiqueta-input[for="adminCode"]::before {
+            content: "🔑";
+        }
+
+        .contenedor-input {
+            position: relative;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .control-formulario {
+            width: 100%;
+            padding: 18px 50px 18px 20px;
+            background: rgba(17, 17, 17, 0.9);
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            color: var(--blanco);
+            outline: none;
+            font-family: 'Consolas', 'Courier New', monospace;
+        }
+
+        .control-formulario:focus {
+            border-color: var(--azul-claro);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            background: rgba(17, 17, 17, 1);
+            transform: translateY(-2px);
+        }
+
+        .control-formulario.error {
+            border-color: var(--rojo);
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .control-formulario.success {
+            border-color: var(--verde);
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .control-formulario::placeholder {
+            color: rgba(187, 222, 251, 0.5);
+            opacity: 0.7;
+        }
+
+        .hint-formulario {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: rgba(187, 222, 251, 0.7);
+            font-style: italic;
+            padding-left: 5px;
+        }
+
+        .boton-visibilidad {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--azul-muy-claro);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .boton-visibilidad:hover {
+            color: var(--azul-claro);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        /* ===== INDICADOR DE ESTADO ===== */
+        .indicador-estado {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            background: rgba(17, 17, 17, 0.7);
+            border: 2px solid rgba(187, 222, 251, 0.2);
+            transition: all 0.3s ease;
+            animation: aparecer 0.8s ease-out 0.6s both;
+        }
+
+        .indicador-estado.valido {
+            border-color: var(--verde);
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .indicador-estado.invalido {
+            border-color: var(--rojo);
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .indicador-estado.bloqueado {
+            border-color: var(--naranja);
+            background: rgba(230, 126, 34, 0.1);
+        }
+
+        .punto-estado {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: rgba(187, 222, 251, 0.5);
+            margin-right: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .punto-estado.valido {
+            background-color: var(--verde);
+            box-shadow: 0 0 10px rgba(46, 204, 113, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        .punto-estado.invalido {
+            background-color: var(--rojo);
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.6);
+        }
+
+        .punto-estado.bloqueado {
+            background-color: var(--naranja);
+            box-shadow: 0 0 10px rgba(230, 126, 34, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        #textoEstado {
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: var(--azul-muy-claro);
+        }
+
+        /* ===== CONTADOR DE INTENTOS ===== */
+        .contador-intentos {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(231, 76, 60, 0.1);
+            border: 2px solid var(--rojo);
+            border-radius: 12px;
+            color: var(--azul-muy-claro);
+            font-size: 0.9rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .contador-intentos.mostrar {
+            display: block;
+        }
+
+        .contador-intentos span {
+            color: var(--amarillo);
+            font-weight: bold;
+        }
+
+        /* ===== BOTÓN DE ACCESO ===== */
+        .boton-acceso {
+            width: 100%;
+            padding: 20px;
+            background: var(--degrade-admin);
+            color: var(--blanco);
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 25px;
+            animation: aparecer 0.8s ease-out 0.8s both;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        .boton-acceso::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .boton-acceso:hover:not(:disabled) {
+            background: linear-gradient(135deg, #2c3e50, var(--azul-medio));
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(26, 58, 95, 0.4);
+        }
+
+        .boton-acceso:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .boton-acceso:active:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .boton-acceso:disabled {
+            background: linear-gradient(135deg, #5d6d7e, #7f8c8d);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.6;
+        }
+
+        .boton-acceso::after {
+            content: "🚀";
+            font-size: 1.2rem;
+        }
+
+        /* ===== INDICADOR DE CARGA ===== */
+        .indicador-carga {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid var(--verde);
+            border-radius: 12px;
+            color: var(--azul-muy-claro);
+            font-weight: 500;
+            margin-top: 20px;
+            font-size: 0.95rem;
+            animation: aparecer 0.5s ease-out;
+        }
+
+        .contenido-carga {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .spinner-carga {
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(52, 152, 219, 0.3);
+            border-top: 3px solid var(--azul-claro);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* ===== PIE ADMINISTRADOR ===== */
+        .pie-admin {
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(241, 196, 15, 0.1);
+            border: 2px solid var(--amarillo);
+            border-radius: 12px;
+            color: var(--azul-muy-claro);
+            font-size: 0.85rem;
+            font-weight: 500;
+            animation: aparecer 0.8s ease-out 1s both;
+        }
+
+        .pie-admin strong {
+            color: var(--amarillo);
+        }
+
+        .pie-admin::before {
+            content: "⚠️";
+            margin-right: 8px;
+        }
+
+        /* ===== NOTIFICACIÓN ===== */
+        .notificacion {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            color: var(--blanco);
+            font-weight: 600;
+            z-index: 1000;
+            animation: aparecer 0.5s ease-out;
+            box-shadow: var(--sombra-fuerte);
+            max-width: 300px;
+            display: none;
+        }
+
+        .notificacion.exito {
+            background: linear-gradient(135deg, var(--verde), #27ae60);
+            border-left: 5px solid var(--verde);
+        }
+
+        .notificacion.error {
+            background: linear-gradient(135deg, var(--rojo), #c0392b);
+            border-left: 5px solid var(--rojo);
+        }
+
+        .notificacion.bloqueado {
+            background: linear-gradient(135deg, var(--naranja), #d35400);
+            border-left: 5px solid var(--naranja);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .contenedor-admin {
+                max-width: 450px;
+            }
+            
+            .encabezado-admin {
+                padding: 30px 20px;
+            }
+            
+            .encabezado-admin h1 {
+                font-size: 1.8rem;
+            }
+            
+            .contenedor-botones {
+                padding: 15px 20px 0 20px;
+            }
+            
+            .boton-regresar {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+                min-width: 140px;
+            }
+            
+            .cuerpo-admin {
+                padding: 25px;
+            }
+            
+            .boton-acceso {
+                padding: 18px;
+                font-size: 1rem;
+            }
+            
+            .notificacion {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .contenedor-admin {
+                max-width: 95%;
+            }
+            
+            .encabezado-admin {
+                padding: 25px 15px;
+            }
+            
+            .encabezado-admin h1 {
+                font-size: 1.6rem;
+            }
+            
+            .contenedor-botones {
+                padding: 15px;
+                flex-direction: column;
+            }
+            
+            .boton-regresar {
+                width: 100%;
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .cuerpo-admin {
+                padding: 20px;
+            }
+            
+            .info-seguridad {
+                padding: 20px;
+            }
+            
+            .control-formulario {
+                padding: 16px 45px 16px 15px;
+                font-size: 0.95rem;
+            }
+            
+            .boton-acceso {
+                padding: 16px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body class="a">
+    <!-- Elementos decorativos -->
+    <div class="decoracion circulo circulo-1"></div>
+    <div class="decoracion circulo circulo-2"></div>
+    <div class="decoracion circulo circulo-3"></div>
+    <div class="decoracion linea linea-1"></div>
+    <div class="decoracion linea linea-2"></div>
+    
+    <!-- Notificación flotante -->
+    <div id="notificacion" class="notificacion"></div>
+    
+    <!-- Contenedor Administrador -->
+    <div class="contenedor-admin">
+        <div class="encabezado-admin">
+            <h1>Acceso Administrador</h1>
+            <p>Sistema de acceso exclusivo para administradores autorizados</p>
+        </div>
+
+        <!-- CONTENEDOR DE BOTONES -->
+        <div class="contenedor-botones">
+            <a class="boton-regresar" href="../Rol.html">
+                ← Volver al Inicio
+            </a>
+        </div>
+
+        <div class="cuerpo-admin">
+            <!-- Información de Seguridad -->
+            <div class="info-seguridad">
+                <h3>Niveles de Seguridad del Sistema</h3>
+                <ul>
+                    <li>Acceso restringido a administradores autorizados</li>
+                    <li>Credenciales de usuario y código de acceso</li>
+                    <li>Registro de todas las actividades del sistema</li>
+                    <li>Redirección segura al panel de control</li>
+                </ul>
+            </div>
+
+            <!-- Contador de intentos -->
+            <div class="contador-intentos" id="contadorIntentos">
+                ⚠️ Intentos restantes: <span id="intentosRestantes">3</span>
+            </div>
+
+            <!-- Formulario de Acceso -->
+            <form id="formularioAccesoAdmin">
+                <!-- Campo para usuario -->
+                <div class="grupo-formulario">
+                    <label class="etiqueta-input" for="adminUsername">
+                        Usuario Administrador
+                    </label>
+                    <div class="contenedor-input">
+                        <input 
+                            type="text" 
+                            id="adminUsername" 
+                            class="control-formulario user-field" 
+                            placeholder="admin.usuario"
+                            maxlength="30"
+                            required
+                            autocomplete="off"
+                            autofocus
+                        >
+                    </div>
+                    <span class="hint-formulario">Ingrese su nombre de usuario de administrador</span>
+                </div>
+
+                <!-- Campo para código -->
+                <div class="grupo-formulario">
+                    <label class="etiqueta-input" for="adminCode">
+                        Código de Administrador
+                    </label>
+                    <div class="contenedor-input">
+                        <input 
+                            type="password" 
+                            id="adminCode" 
+                            class="control-formulario code-field" 
+                            placeholder="ADMIN-XXXX-XXXX"
+                            maxlength="20"
+                            required
+                            autocomplete="off"
+                        >
+                        <button type="button" class="boton-visibilidad" id="botonVisibilidad">👁️</button>
+                    </div>
+                    <span class="hint-formulario">Formato: ADMIN-XXXX-XXXX (Ej: ADMIN-2024-001)</span>
+                    
+                    <!-- Indicador de Estado -->
+                    <div class="indicador-estado" id="indicadorEstado">
+                        <div class="punto-estado" id="puntoEstado"></div>
+                        <span id="textoEstado">⏳ Ingrese sus credenciales de administrador...</span>
+                    </div>
+                </div>
+
+                <!-- ===== AQUÍ DEBES PONER TU ENLACE DE REDIRECCIÓN ===== -->
+                <!-- Botón de Acceso -->
+                <button type="submit" class="boton-acceso" id="botonAcceso" disabled>
+                    Acceder al Panel de Control
+                </button>
+                <!-- ===== FIN DEL ENLACE ===== -->
+
+                <!-- Indicador de Carga -->
+                <div class="indicador-carga" id="indicadorCarga">
+                    <div class="contenido-carga">
+                        <div class="spinner-carga"></div>
+                        Verificando credenciales de administrador...
+                    </div>
+                </div>
+            </form>
+
+            <!-- Pie Administrador -->
+            <div class="pie-admin">
+                <strong>ADVERTENCIA:</strong> Este sistema está monitoreado. Acceso solo para personal autorizado.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIGURACIÓN IMPORTANTE =====
+        // AQUÍ ES DONDE PONES EL ENLACE DE REDIRECCIÓN
+        const ENLACE_REDIRECCION = './PanelADM.html';  // ← CAMBIA ESTE ENLACE
+        // ====================================
+
+        // ===== ELEMENTOS DEL DOM =====
+        const formulario = document.getElementById('formularioAccesoAdmin');
+        const adminUsernameInput = document.getElementById('adminUsername');
+        const adminCodeInput = document.getElementById('adminCode');
+        const botonVisibilidad = document.getElementById('botonVisibilidad');
+        const puntoEstado = document.getElementById('puntoEstado');
+        const indicadorEstado = document.getElementById('indicadorEstado');
+        const textoEstado = document.getElementById('textoEstado');
+        const botonAcceso = document.getElementById('botonAcceso');
+        const indicadorCarga = document.getElementById('indicadorCarga');
+        const contadorIntentos = document.getElementById('contadorIntentos');
+        const intentosRestantesSpan = document.getElementById('intentosRestantes');
+        const notificacion = document.getElementById('notificacion');
+
+        // ===== CONFIGURACIÓN DE SEGURIDAD =====
+        const MAX_INTENTOS = 3;
+        const TIEMPO_BLOQUEO = 30000; // 30 segundos en milisegundos
+        
+        // Credenciales válidas (PUEDES CAMBIAR ESTOS VALORES)
+        const CREDENCIALES_VALIDAS = {
+            'admin.sistema': 'ADMIN-2024-002',
+            'sys.admin': 'SYS-ADMIN-001',
+            'administrador': 'ADMIN-2024-001'
+        };
+
+        // ===== ESTADO DE LA APLICACIÓN =====
+        let intentosFallidos = parseInt(sessionStorage.getItem('adminIntentosFallidos')) || 0;
+        let tiempoBloqueo = parseInt(sessionStorage.getItem('adminTiempoBloqueo')) || 0;
+        let estaBloqueado = false;
+
+        // ===== FUNCIONES DE UTILIDAD =====
+        function mostrarNotificacion(mensaje, tipo = 'error') {
+            notificacion.textContent = mensaje;
+            notificacion.className = `notificacion ${tipo}`;
+            notificacion.style.display = 'block';
+            
+            setTimeout(() => {
+                notificacion.style.display = 'none';
+            }, 5000);
+        }
+
+        function actualizarEstado() {
+            if (estaBloqueado) {
+                const tiempoRestante = Math.ceil((tiempoBloqueo - Date.now()) / 1000);
+                puntoEstado.className = 'punto-estado bloqueado';
+                indicadorEstado.className = 'indicador-estado bloqueado';
+                textoEstado.textContent = `⏰ Sistema bloqueado. Espera ${tiempoRestante} segundos...`;
+                botonAcceso.disabled = true;
+                adminUsernameInput.disabled = true;
+                adminCodeInput.disabled = true;
+                return;
+            }
+
+            const usuario = adminUsernameInput.value.trim();
+            const codigo = adminCodeInput.value.trim().toUpperCase();
+            
+            // Actualizar contador de intentos
+            if (intentosFallidos > 0) {
+                contadorIntentos.classList.add('mostrar');
+                intentosRestantesSpan.textContent = MAX_INTENTOS - intentosFallidos;
+            } else {
+                contadorIntentos.classList.remove('mostrar');
+            }
+
+            // Verificar campos
+            if (usuario.length >= 3 && codigo.length >= 5) {
+                const esValido = CREDENCIALES_VALIDAS.hasOwnProperty(usuario.toLowerCase()) && 
+                                CREDENCIALES_VALIDAS[usuario.toLowerCase()] === codigo;
+                
+                if (esValido) {
+                    // Credenciales válidas
+                    puntoEstado.className = 'punto-estado valido';
+                    indicadorEstado.className = 'indicador-estado valido';
+                    textoEstado.textContent = '✅ Credenciales válidas - Acceso autorizado';
+                    botonAcceso.disabled = false;
+                    adminUsernameInput.classList.add('success');
+                    adminCodeInput.classList.add('success');
+                    adminUsernameInput.classList.remove('error');
+                    adminCodeInput.classList.remove('error');
+                } else {
+                    // Credenciales inválidas
+                    puntoEstado.className = 'punto-estado invalido';
+                    indicadorEstado.className = 'indicador-estado invalido';
+                    textoEstado.textContent = '❌ Credenciales inválidas - Acceso denegado';
+                    botonAcceso.disabled = true;
+                    adminUsernameInput.classList.add('error');
+                    adminCodeInput.classList.add('error');
+                    adminUsernameInput.classList.remove('success');
+                    adminCodeInput.classList.remove('success');
+                }
+            } else {
+                // Campos vacíos o muy cortos
+                puntoEstado.className = 'punto-estado';
+                indicadorEstado.className = 'indicador-estado';
+                textoEstado.textContent = '⏳ Ingrese sus credenciales de administrador...';
+                botonAcceso.disabled = true;
+                adminUsernameInput.classList.remove('error', 'success');
+                adminCodeInput.classList.remove('error', 'success');
+            }
+        }
+
+        function verificarBloqueo() {
+            if (tiempoBloqueo > Date.now()) {
+                estaBloqueado = true;
+                mostrarNotificacion(`Sistema bloqueado. Intenta de nuevo en ${Math.ceil((tiempoBloqueo - Date.now()) / 1000)} segundos.`, 'bloqueado');
+                return true;
+            } else {
+                estaBloqueado = false;
+                sessionStorage.removeItem('adminTiempoBloqueo');
+                return false;
+            }
+        }
+
+        function reiniciarSistema() {
+            intentosFallidos = 0;
+            estaBloqueado = false;
+            sessionStorage.removeItem('adminIntentosFallidos');
+            sessionStorage.removeItem('adminTiempoBloqueo');
+            actualizarEstado();
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar si el sistema está bloqueado
+            if (verificarBloqueo()) {
+                // Configurar temporizador para desbloquear
+                const intervalo = setInterval(() => {
+                    if (!verificarBloqueo()) {
+                        clearInterval(intervalo);
+                        mostrarNotificacion('Sistema desbloqueado. Puedes intentar nuevamente.', 'exito');
+                        adminUsernameInput.disabled = false;
+                        adminCodeInput.disabled = false;
+                        adminUsernameInput.focus();
+                    }
+                    actualizarEstado();
+                }, 1000);
+            }
+
+            // Configurar eventos
+            botonVisibilidad.addEventListener('click', function() {
+                if (adminCodeInput.type === 'password') {
+                    adminCodeInput.type = 'text';
+                    this.innerHTML = '👁️‍🗨️';
+                } else {
+                    adminCodeInput.type = 'password';
+                    this.innerHTML = '👁️';
+                }
+            });
+
+            // Validación en tiempo real
+            adminUsernameInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^a-zA-Z0-9._-]/g, '');
+                actualizarEstado();
+            });
+
+            adminCodeInput.addEventListener('input', function() {
+                actualizarEstado();
+            });
+
+            // Formatear automáticamente el código
+            adminCodeInput.addEventListener('keyup', function(e) {
+                let valor = this.value.toUpperCase().replace(/[^A-Z0-9\-]/g, '');
+                
+                if (valor.length > 5 && !valor.includes('-')) {
+                    if (valor.startsWith('ADMIN') && valor.length > 5) {
+                        valor = valor.slice(0, 5) + '-' + valor.slice(5);
+                    }
+                    if (valor.length > 10 && valor.split('-').length === 2) {
+                        valor = valor.slice(0, 10) + '-' + valor.slice(10);
+                    }
+                }
+                
+                this.value = valor;
+            });
+
+            // Manejar el envío del formulario
+            formulario.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (estaBloqueado) return;
+                
+                const usuario = adminUsernameInput.value.trim().toLowerCase();
+                const codigo = adminCodeInput.value.trim().toUpperCase();
+                
+                // Validar credenciales
+                const esValido = CREDENCIALES_VALIDAS.hasOwnProperty(usuario) && 
+                                CREDENCIALES_VALIDAS[usuario] === codigo;
+                
+                if (!esValido) {
+                    // Incrementar intentos fallidos
+                    intentosFallidos++;
+                    sessionStorage.setItem('adminIntentosFallidos', intentosFallidos);
+                    
+                    // Verificar si se superó el límite
+                    if (intentosFallidos >= MAX_INTENTOS) {
+                        tiempoBloqueo = Date.now() + TIEMPO_BLOQUEO;
+                        sessionStorage.setItem('adminTiempoBloqueo', tiempoBloqueo);
+                        estaBloqueado = true;
+                        
+                        mostrarNotificacion('Demasiados intentos fallidos. Sistema bloqueado por 30 segundos.', 'bloqueado');
+                        formulario.classList.add('shake');
+                        
+                        setTimeout(() => {
+                            formulario.classList.remove('shake');
+                        }, 500);
+                    } else {
+                        mostrarNotificacion(`Credenciales incorrectas. Te quedan ${MAX_INTENTOS - intentosFallidos} intentos.`, 'error');
+                        formulario.classList.add('shake');
+                        
+                        setTimeout(() => {
+                            formulario.classList.remove('shake');
+                        }, 500);
+                    }
+                    
+                    actualizarEstado();
+                    return;
+                }
+
+                // CREDENCIALES VÁLIDAS - Proceder con el acceso
+                reiniciarSistema();
+                
+                // Mostrar indicador de carga
+                botonAcceso.style.display = 'none';
+                indicadorCarga.style.display = 'block';
+                textoEstado.textContent = '✅ Credenciales verificadas - Redirigiendo al panel...';
+                
+                // Registrar acceso
+                console.log(`Acceso administrador registrado - Usuario: ${usuario} - Hora: ${new Date().toLocaleString()}`);
+                mostrarNotificacion('Acceso concedido. Redirigiendo al panel de control...', 'exito');
+                
+                // Simular proceso de verificación
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // ===== REDIRECCIÓN AQUÍ =====
+                // Esto es lo que se ejecutará cuando las credenciales sean correctas
+                window.location.href = ENLACE_REDIRECCION;
+                // ============================
+            });
+
+            // Auto-focus en el primer campo
+            setTimeout(() => {
+                if (!estaBloqueado) {
+                    adminUsernameInput.focus();
+                }
+            }, 500);
+            
+            // Validar estado inicial
+            actualizarEstado();
+            
+            // Mensaje de consola
+            console.log('Sistema de acceso administrador cargado - Versión mejorada');
+            console.log('Usuarios disponibles:', Object.keys(CREDENCIALES_VALIDAS));
+            console.log('Redirección configurada a:', ENLACE_REDIRECCION);
+        });
+
+        // Función para probar credenciales (debug)
+        window.probarCredencial = function(usuario, codigo) {
+            return CREDENCIALES_VALIDAS.hasOwnProperty(usuario) && 
+                   CREDENCIALES_VALIDAS[usuario] === codigo;
+        };
+    </script>
+</body>
+</html>

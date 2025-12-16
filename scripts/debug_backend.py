@@ -84,7 +84,7 @@ def main():
     print_section("4. IMPORTS DE MODULOS", "-")
     
     try:
-        from backend.core.dijkstra import obtener_datos_ruta
+        from backend.core.dijkstra import obtener_ruta_multiparada
         print("[OK]  backend.core.dijkstra")
     except Exception as e:
         print(f"[ERROR] dijkstra: {str(e)[:50]}")

@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Pedidos - RutaTec Paquetería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --primary-dark: #0c1b33;
+            --primary: #1a3a5f;
+            --primary-light: #3498db;
+            --primary-extra-light: #bbdefb;
+            --secondary: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --info: #17a2b8;
+            --white: #ffffff;
+            --gray-light: #ecf0f1;
+            
+            --gradient-bg: linear-gradient(135deg, var(--primary-dark) 0%, #0d2b4a 50%, var(--primary-dark) 100%);
+            --gradient-card: linear-gradient(145deg, rgba(26, 58, 95, 0.95), rgba(17, 34, 64, 0.95));
+            --gradient-primary: linear-gradient(135deg, var(--primary-light), #2980b9);
+            --gradient-info: linear-gradient(135deg, var(--info), #138496);
+            --gradient-success: linear-gradient(135deg, var(--secondary), #27ae60);
+            
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
+            
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 20px;
+            
+            --transition-normal: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== DECORACIONES DE FONDO ===== */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(26, 58, 95, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.05) 0%, transparent 20%);
+            z-index: -2;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-light), transparent 70%);
+            opacity: 0.15;
+            filter: blur(20px);
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 250px;
+            height: 250px;
+            bottom: -50px;
+            left: -100px;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== ESTRUCTURA PRINCIPAL ===== */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* ===== HEADER ===== */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary-extra-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ===== SISTEMA DE TABS ===== */
+        .tabs-container {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            margin-bottom: 30px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .tabs-header {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border-bottom: 3px solid transparent;
+            color: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--white);
+        }
+
+        .tab.active {
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+        }
+
+        .tab-content {
+            padding: 40px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== FORMULARIO DE REGISTRO ===== */
+        .register-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-extra-light);
+        }
+
+        .form-group label i {
+            color: var(--info);
+            font-size: 1.1rem;
+            width: 25px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-size: 1rem;
+            transition: all var(--transition-normal);
+            backdrop-filter: blur(5px);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--info);
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .input-help {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* ===== BOTÓN PRINCIPAL ===== */
+        .primary-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-info);
+            color: var(--white);
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+            background: linear-gradient(135deg, #138496, var(--info));
+        }
+
+        /* ===== TABLA DE REGISTRO ===== */
+        .registro-table-container {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-xl);
+            padding: 30px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            animation: slideInRight 0.8s ease-out 0.4s both;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .table-header h3 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--white);
+        }
+
+        .table-header h3 i {
+            color: var(--primary-light);
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 10px 15px 10px 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            width: 250px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-extra-light);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .registro-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .registro-table thead {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .registro-table th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-light);
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .registro-table th i {
+            margin-right: 8px;
+        }
+
+        .registro-table tbody tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all var(--transition-normal);
+        }
+
+        .registro-table tbody tr:hover {
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .registro-table td {
+            padding: 14px 16px;
+            color: var(--primary-extra-light);
+        }
+
+        .registro-table td:first-child {
+            font-weight: 600;
+            color: var(--info);
+        }
+
+        .estado-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .estado-pendiente {
+            background: rgba(241, 196, 15, 0.2);
+            color: var(--warning);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+
+        .estado-asignado {
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--primary-light);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .estado-en_ruta {
+            background: rgba(155, 89, 182, 0.2);
+            color: #9b59b6;
+            border: 1px solid rgba(155, 89, 182, 0.3);
+        }
+
+        .estado-entregado {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--secondary);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .estado-cancelado {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-editar {
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-eliminar {
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        /* ===== PAGINACIÓN ===== */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-sm);
+            color: var(--white);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .page-btn:hover:not(:disabled) {
+            background: rgba(52, 152, 219, 0.2);
+            border-color: var(--primary-light);
+        }
+
+        .page-btn.active {
+            background: var(--gradient-primary);
+            border-color: var(--primary-light);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* ===== ESTADÍSTICAS ===== */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .stat-card {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-lg);
+            padding: 20px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            text-align: center;
+            transition: all var(--transition-normal);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-light);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 1.3rem;
+        }
+
+        .icon-pendientes {
+            background: rgba(241, 196, 15, 0.2);
+            color: var(--warning);
+        }
+
+        .icon-activos {
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--primary-light);
+        }
+
+        .icon-entregados {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--secondary);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, var(--primary-light), var(--white));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .stat-label {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+        }
+
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 25px;
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(10px);
+            border-left: 5px solid;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            max-width: 350px;
+            display: none;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+            display: block;
+        }
+
+        .notification.error {
+            background: rgba(231, 76, 60, 0.9);
+            border-left-color: var(--danger);
+        }
+
+        .notification.success {
+            background: rgba(46, 204, 113, 0.9);
+            border-left-color: var(--secondary);
+        }
+
+        .notification.info {
+            background: rgba(52, 152, 219, 0.9);
+            border-left-color: var(--primary-light);
+        }
+
+        .notification .close-notification {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .notification .close-notification:hover {
+            opacity: 1;
+        }
+
+        /* ===== FOOTER ===== */
+        .dashboard-footer {
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        .footer-text {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+        }
+
+        .system-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(23, 162, 184, 0.1);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(23, 162, 184, 0.3);
+        }
+
+        .system-info i {
+            color: var(--info);
+        }
+
+        #total-registros {
+            font-weight: 600;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .logo-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 15px;
+            }
+            
+            .tab-content {
+                padding: 25px 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .notification {
+                top: 20px;
+                right: 20px;
+                left: 20px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decoraciones de fondo -->
+    <div class="bg-pattern"></div>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification">
+        <button class="close-notification"><i class="fas fa-times"></i></button>
+        <div id="notification-message"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Gestión de Pedidos</h1>
+                    <p>Registro y seguimiento de envíos</p>
+                </div>
+            </div>
+            
+            <a href="../PanelADM.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Volver al panel
+            </a>
+        </header>
+
+        <!-- Sistema de Tabs -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <div class="tab active" data-tab="registro">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Registrar Pedido</span>
+                </div>
+                <div class="tab" data-tab="lista">
+                    <i class="fas fa-list-alt"></i>
+                    <span>Lista de Pedidos</span>
+                </div>
+                <div class="tab" data-tab="estadisticas">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Estadísticas</span>
+                </div>
+            </div>
+
+            <!-- Tab 1: Registro de Pedidos -->
+            <div class="tab-content active" id="registro">
+                <div class="register-form">
+                    <h3 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-file-alt" style="color: var(--info);"></i>
+                        Formulario de Registro
+                    </h3>
+                    
+                    <form id="pedidoForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="id_pedido">
+                                    <i class="fas fa-hashtag"></i>
+                                    Número de Pedido
+                                </label>
+                                <input type="number" id="id_pedido" class="form-control" 
+                                       placeholder="Ej: 1001" min="1" required>
+                                <span class="input-help">Identificador único del pedido</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="id_usuario">
+                                    <i class="fas fa-user"></i>
+                                    ID del Cliente
+                                </label>
+                                <input type="number" id="id_usuario" class="form-control" 
+                                       placeholder="Ej: 201" min="1" required>
+                                <span class="input-help">Identificador del cliente</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="id_vehiculo">
+                                    <i class="fas fa-truck"></i>
+                                    ID del Vehículo
+                                </label>
+                                <input type="number" id="id_vehiculo" class="form-control" 
+                                       placeholder="Ej: 301" min="1" required>
+                                <span class="input-help">Vehículo asignado para el envío</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="destino">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Destino de Entrega
+                                </label>
+                                <input type="text" id="destino" class="form-control" 
+                                       placeholder="Ej: Av. Principal #123, Col. Centro" required>
+                                <span class="input-help">Dirección completa del destino</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="capacidad_paquetes">
+                                    <i class="fas fa-boxes"></i>
+                                    Capacidad de Paquetes
+                                </label>
+                                <input type="number" id="capacidad_paquetes" class="form-control" 
+                                       placeholder="Ej: 15" min="1" required>
+                                <span class="input-help">Número máximo de paquetes en este envío</span>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="estado">
+                                    <i class="fas fa-tasks"></i>
+                                    Estado del Pedido
+                                </label>
+                                <select id="estado" class="form-control" required>
+                                    <option value="pendiente" selected>🟡 Pendiente</option>
+                                    <option value="asignado">🔵 Asignado</option>
+                                    <option value="en_ruta">🟣 En Ruta</option>
+                                    <option value="entregado">🟢 Entregado</option>
+                                    <option value="cancelado">🔴 Cancelado</option>
+                                </select>
+                                <span class="input-help">Estado actual del pedido</span>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="primary-btn">
+                            <i class="fas fa-save"></i>
+                            Registrar Pedido
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Tab 2: Lista de Pedidos -->
+            <div class="tab-content" id="lista">
+                <div class="registro-table-container">
+                    <div class="table-header">
+                        <h3>
+                            <i class="fas fa-clipboard-check"></i>
+                            Registro de Pedidos
+                        </h3>
+                        <div class="table-controls">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="searchInput" placeholder="Buscar pedido...">
+                            </div>
+                            <button class="action-btn" onclick="exportarRegistro()">
+                                <i class="fas fa-download"></i>
+                                Exportar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-wrapper">
+                        <table class="registro-table" id="pedidosTable">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-hashtag"></i> ID</th>
+                                    <th><i class="fas fa-user"></i> Cliente</th>
+                                    <th><i class="fas fa-truck"></i> Vehículo</th>
+                                    <th><i class="fas fa-map-marker-alt"></i> Destino</th>
+                                    <th><i class="fas fa-box"></i> Paquetes</th>
+                                    <th><i class="fas fa-tasks"></i> Estado</th>
+                                    <th><i class="fas fa-calendar"></i> Fecha</th>
+                                    <th><i class="fas fa-cogs"></i> Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pedidosTableBody">
+                                <!-- Los pedidos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination" id="pagination">
+                        <!-- La paginación se generará dinámicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Estadísticas -->
+            <div class="tab-content" id="estadisticas">
+                <h3 style="margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-chart-pie" style="color: var(--info);"></i>
+                    Estadísticas de Pedidos
+                </h3>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-pendientes">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-number" id="statPendientes">0</div>
+                        <div class="stat-label">Pedidos Pendientes</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon icon-activos">
+                            <i class="fas fa-truck-moving"></i>
+                        </div>
+                        <div class="stat-number" id="statActivos">0</div>
+                        <div class="stat-label">En Proceso</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon icon-entregados">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-number" id="statEntregados">0</div>
+                        <div class="stat-label">Entregados</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(155, 89, 182, 0.2); color: #9b59b6;">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-number" id="statEficiencia">0%</div>
+                        <div class="stat-label">Tasa de Éxito</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 30px; padding: 20px; background: rgba(255, 255, 255, 0.05); border-radius: var(--border-radius-md);">
+                    <h4 style="margin-bottom: 15px; color: var(--primary-light);">
+                        <i class="fas fa-info-circle"></i> Resumen del Mes
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px;">
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--primary-extra-light);">Total Registrados</div>
+                            <div style="font-size: 1.2rem; font-weight: 600;" id="totalMes">0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--primary-extra-light);">Promedio Diario</div>
+                            <div style="font-size: 1.2rem; font-weight: 600;" id="promedioDiario">0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--primary-extra-light);">Valor Estimado</div>
+                            <div style="font-size: 1.2rem; font-weight: 600;" id="valorEstimado">$0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="footer-text">
+                <p>&copy; 2025 RutaTec Paquetería - Sistema de Gestión</p>
+                <p>Control de envíos • Seguimiento en tiempo real • Optimización logística</p>
+            </div>
+            <div class="system-info">
+                <i class="fas fa-database"></i>
+                <div>
+                    <div>Total de Registros</div>
+                    <div id="total-registros">0</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ===== DATOS SIMULADOS =====
+        let pedidos = [
+            {
+                id_pedido: 1001,
+                id_usuario: 201,
+                id_vehiculo: 301,
+                destino: "Av. Juárez #123, Centro, Guadalajara",
+                capacidad_paquetes: 12,
+                estado: "asignado",
+                fecha_registro: "2024-01-15T09:30:00",
+                cliente_nombre: "Juan Pérez",
+                vehiculo_modelo: "Chevrolet Aveo 2024",
+                valor: 1250.50
+            },
+            {
+                id_pedido: 1002,
+                id_usuario: 202,
+                id_vehiculo: 302,
+                destino: "Calle Reforma #456, Col. Moderna",
+                capacidad_paquetes: 8,
+                estado: "en_ruta",
+                fecha_registro: "2024-01-15T10:15:00",
+                cliente_nombre: "María López",
+                vehiculo_modelo: "Toyota Hilux 2023",
+                valor: 890.75
+            },
+            {
+                id_pedido: 1003,
+                id_usuario: 203,
+                id_vehiculo: 303,
+                destino: "Blvd. López Mateos #789, Zona Industrial",
+                capacidad_paquetes: 15,
+                estado: "pendiente",
+                fecha_registro: "2024-01-15T11:45:00",
+                cliente_nombre: "Carlos Ruiz",
+                vehiculo_modelo: "Ford Transit 2024",
+                valor: 2100.00
+            },
+            {
+                id_pedido: 1004,
+                id_usuario: 204,
+                id_vehiculo: 304,
+                destino: "Av. Vallarta #321, Col. Americana",
+                capacidad_paquetes: 6,
+                estado: "entregado",
+                fecha_registro: "2024-01-14T14:20:00",
+                cliente_nombre: "Ana García",
+                vehiculo_modelo: "Nissan NV350",
+                valor: 750.30
+            },
+            {
+                id_pedido: 1005,
+                id_usuario: 205,
+                id_vehiculo: 305,
+                destino: "Periférico Sur #654, Zapopan",
+                capacidad_paquetes: 10,
+                estado: "cancelado",
+                fecha_registro: "2024-01-14T16:45:00",
+                cliente_nombre: "Roberto Mendoza",
+                vehiculo_modelo: "Volkswagen Saveiro",
+                valor: 980.00
+            }
+        ];
+
+        // ===== CONFIGURACIÓN =====
+        const ITEMS_PER_PAGE = 10;
+        let currentPage = 1;
+        let filteredPedidos = [...pedidos];
+
+        // ===== FUNCIONES UTILITARIAS =====
+        function showNotification(message, type = 'success', duration = 4000) {
+            const notification = document.getElementById('notification');
+            const messageElement = document.getElementById('notification-message');
+            
+            notification.className = `notification ${type} show`;
+            notification.style.display = 'block';
+            messageElement.textContent = message;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
+            }, duration);
+        }
+
+        function getEstadoTexto(estado) {
+            const estados = {
+                'pendiente': 'Pendiente',
+                'asignado': 'Asignado',
+                'en_ruta': 'En Ruta',
+                'entregado': 'Entregado',
+                'cancelado': 'Cancelado'
+            };
+            return estados[estado] || estado;
+        }
+
+        function getEstadoClase(estado) {
+            return `estado-${estado}`;
+        }
+
+        function formatearFecha(fechaStr) {
+            const fecha = new Date(fechaStr);
+            return fecha.toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatearMoneda(cantidad) {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN'
+            }).format(cantidad);
+        }
+
+        // ===== SISTEMA DE TABS =====
+        function initializeTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remover clase active de todos los tabs y contenidos
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Activar tab seleccionado
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    // Si es la tab de lista, actualizar la tabla
+                    if (tabId === 'lista') {
+                        cargarTablaPedidos();
+                    }
+                    // Si es la tab de estadísticas, actualizar stats
+                    else if (tabId === 'estadisticas') {
+                        actualizarEstadisticas();
+                    }
+                });
+            });
+        }
+
+        // ===== REGISTRO DE PEDIDOS =====
+        document.getElementById('pedidoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener valores del formulario
+            const id_pedido = parseInt(document.getElementById('id_pedido').value);
+            const id_usuario = parseInt(document.getElementById('id_usuario').value);
+            const id_vehiculo = parseInt(document.getElementById('id_vehiculo').value);
+            const destino = document.getElementById('destino').value.trim();
+            const capacidad_paquetes = parseInt(document.getElementById('capacidad_paquetes').value);
+            const estado = document.getElementById('estado').value;
+            
+            // Validaciones
+            if (!id_pedido || id_pedido <= 0) {
+                showNotification('Ingresa un número de pedido válido', 'error');
+                return;
+            }
+            
+            if (!id_usuario || id_usuario <= 0) {
+                showNotification('Ingresa un ID de cliente válido', 'error');
+                return;
+            }
+            
+            if (!id_vehiculo || id_vehiculo <= 0) {
+                showNotification('Ingresa un ID de vehículo válido', 'error');
+                return;
+            }
+            
+            if (!destino) {
+                showNotification('Ingresa un destino válido', 'error');
+                return;
+            }
+            
+            if (!capacidad_paquetes || capacidad_paquetes <= 0) {
+                showNotification('Ingresa una capacidad válida', 'error');
+                return;
+            }
+            
+            // Verificar si el pedido ya existe
+            if (pedidos.some(p => p.id_pedido === id_pedido)) {
+                showNotification('Ya existe un pedido con este número', 'error');
+                return;
+            }
+            
+            // Crear nuevo pedido
+            const nuevoPedido = {
+                id_pedido,
+                id_usuario,
+                id_vehiculo,
+                destino,
+                capacidad_paquetes,
+                estado,
+                fecha_registro: new Date().toISOString(),
+                cliente_nombre: `Cliente ${id_usuario}`,
+                vehiculo_modelo: `Vehículo ${id_vehiculo}`,
+                valor: capacidad_paquetes * 150 // Valor estimado
+            };
+            
+            // Agregar a la lista de pedidos
+            pedidos.unshift(nuevoPedido);
+            filteredPedidos = [...pedidos];
+            
+            // Mostrar notificación de éxito
+            showNotification(`Pedido #${id_pedido} registrado exitosamente`, 'success');
+            
+            // Actualizar interfaz
+            actualizarContadores();
+            
+            // Limpiar formulario
+            this.reset();
+            document.getElementById('estado').value = 'pendiente';
+            
+            // Generar nuevo ID automático
+            generarSiguienteId();
+            
+            // Registrar en consola
+            console.log('✅ Nuevo pedido registrado:', nuevoPedido);
+            
+            // Cambiar a la tab de lista
+            document.querySelector('[data-tab="lista"]').click();
+        });
+
+        function generarSiguienteId() {
+            const idInput = document.getElementById('id_pedido');
+            const nextId = pedidos.length > 0 ? 
+                Math.max(...pedidos.map(p => p.id_pedido)) + 1 : 1001;
+            idInput.value = nextId;
+        }
+
+        // ===== TABLA DE PEDIDOS =====
+        function cargarTablaPedidos() {
+            const tableBody = document.getElementById('pedidosTableBody');
+            
+            // Calcular índices para paginación
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+            const pedidosPaginados = filteredPedidos.slice(startIndex, endIndex);
+            
+            if (pedidosPaginados.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px; color: var(--primary-extra-light);">
+                            <i class="fas fa-inbox" style="font-size: 2rem; margin-bottom: 15px; display: block;"></i>
+                            No se encontraron pedidos registrados
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            pedidosPaginados.forEach(pedido => {
+                html += `
+                    <tr>
+                        <td><strong>#${pedido.id_pedido}</strong></td>
+                        <td>
+                            <div style="font-weight: 500;">${pedido.cliente_nombre}</div>
+                            <small style="color: var(--primary-extra-light);">ID: ${pedido.id_usuario}</small>
+                        </td>
+                        <td>
+                            <div>${pedido.vehiculo_modelo}</div>
+                            <small style="color: var(--primary-extra-light);">ID: ${pedido.id_vehiculo}</small>
+                        </td>
+                        <td>${pedido.destino.substring(0, 30)}${pedido.destino.length > 30 ? '...' : ''}</td>
+                        <td style="text-align: center;">
+                            <span style="display: inline-block; padding: 4px 8px; background: rgba(52, 152, 219, 0.1); border-radius: 4px;">
+                                ${pedido.capacidad_paquetes}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="estado-badge ${getEstadoClase(pedido.estado)}">
+                                ${getEstadoTexto(pedido.estado)}
+                            </span>
+                        </td>
+                        <td>${formatearFecha(pedido.fecha_registro)}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="action-btn btn-editar" onclick="editarPedido(${pedido.id_pedido})">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="action-btn btn-eliminar" onclick="eliminarPedido(${pedido.id_pedido})">
+                                    <i class="fas fa-trash"></i> Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = html;
+            
+            // Actualizar paginación
+            actualizarPaginacion();
+        }
+
+        function actualizarPaginacion() {
+            const totalPages = Math.ceil(filteredPedidos.length / ITEMS_PER_PAGE);
+            const pagination = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+            
+            let html = `
+                <button class="page-btn" onclick="cambiarPagina(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            `;
+            
+            // Mostrar números de página
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    html += `
+                        <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="cambiarPagina(${i})">
+                            ${i}
+                        </button>
+                    `;
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    html += `<span style="color: var(--primary-extra-light);">...</span>`;
+                }
+            }
+            
+            html += `
+                <button class="page-btn" onclick="cambiarPagina(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            `;
+            
+            pagination.innerHTML = html;
+        }
+
+        function cambiarPagina(page) {
+            currentPage = page;
+            cargarTablaPedidos();
+        }
+
+        // ===== BÚSQUEDA Y FILTROS =====
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm.trim() === '') {
+                filteredPedidos = [...pedidos];
+            } else {
+                filteredPedidos = pedidos.filter(pedido => 
+                    pedido.id_pedido.toString().includes(searchTerm) ||
+                    pedido.cliente_nombre.toLowerCase().includes(searchTerm) ||
+                    pedido.destino.toLowerCase().includes(searchTerm) ||
+                    pedido.estado.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            currentPage = 1;
+            cargarTablaPedidos();
+        });
+
+        // ===== ESTADÍSTICAS =====
+        function actualizarEstadisticas() {
+            const totalPedidos = pedidos.length;
+            const pedidosPendientes = pedidos.filter(p => p.estado === 'pendiente').length;
+            const pedidosActivos = pedidos.filter(p => p.estado === 'asignado' || p.estado === 'en_ruta').length;
+            const pedidosEntregados = pedidos.filter(p => p.estado === 'entregado').length;
+            const pedidosCancelados = pedidos.filter(p => p.estado === 'cancelado').length;
+            
+            // Calcular eficiencia (entregados / (total - cancelados))
+            const eficiencia = totalPedidos - pedidosCancelados > 0 
+                ? Math.round((pedidosEntregados / (totalPedidos - pedidosCancelados)) * 100)
+                : 0;
+            
+            // Actualizar estadísticas
+            document.getElementById('statPendientes').textContent = pedidosPendientes;
+            document.getElementById('statActivos').textContent = pedidosActivos;
+            document.getElementById('statEntregados').textContent = pedidosEntregados;
+            document.getElementById('statEficiencia').textContent = `${eficiencia}%`;
+            
+            // Estadísticas del mes
+            const pedidosEsteMes = pedidos.filter(p => {
+                const fechaPedido = new Date(p.fecha_registro);
+                const ahora = new Date();
+                return fechaPedido.getMonth() === ahora.getMonth() && 
+                       fechaPedido.getFullYear() === ahora.getFullYear();
+            });
+            
+            const totalMes = pedidosEsteMes.length;
+            const promedioDiario = totalMes > 0 ? Math.round(totalMes / new Date().getDate()) : 0;
+            const valorTotal = pedidosEsteMes.reduce((sum, p) => sum + (p.valor || 0), 0);
+            
+            document.getElementById('totalMes').textContent = totalMes;
+            document.getElementById('promedioDiario').textContent = promedioDiario;
+            document.getElementById('valorEstimado').textContent = formatearMoneda(valorTotal);
+        }
+
+        function actualizarContadores() {
+            document.getElementById('total-registros').textContent = pedidos.length;
+        }
+
+        // ===== FUNCIONES DE ACCIÓN =====
+        function editarPedido(id) {
+            const pedido = pedidos.find(p => p.id_pedido === id);
+            if (pedido) {
+                showNotification(`Editando pedido #${id} - ${pedido.cliente_nombre}`, 'info');
+                console.log('✏️ Editando pedido:', pedido);
+                
+                // Cambiar a tab de registro y cargar datos
+                document.querySelector('[data-tab="registro"]').click();
+                
+                // Cargar datos en el formulario
+                document.getElementById('id_pedido').value = pedido.id_pedido;
+                document.getElementById('id_usuario').value = pedido.id_usuario;
+                document.getElementById('id_vehiculo').value = pedido.id_vehiculo;
+                document.getElementById('destino').value = pedido.destino;
+                document.getElementById('capacidad_paquetes').value = pedido.capacidad_paquetes;
+                document.getElementById('estado').value = pedido.estado;
+            }
+        }
+
+        function eliminarPedido(id) {
+            if (confirm(`¿Estás seguro de eliminar el pedido #${id}? Esta acción no se puede deshacer.`)) {
+                const index = pedidos.findIndex(p => p.id_pedido === id);
+                if (index !== -1) {
+                    const pedidoEliminado = pedidos.splice(index, 1)[0];
+                    filteredPedidos = [...pedidos];
+                    
+                    showNotification(`Pedido #${id} eliminado exitosamente`, 'success');
+                    cargarTablaPedidos();
+                    actualizarContadores();
+                    actualizarEstadisticas();
+                    
+                    console.log('🗑️ Pedido eliminado:', pedidoEliminado);
+                }
+            }
+        }
+
+        function exportarRegistro() {
+            const dataStr = JSON.stringify(pedidos, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const link = document.createElement('a');
+            link.setAttribute('href', dataUri);
+            link.setAttribute('download', `registro_pedidos_${new Date().getTime()}.json`);
+            link.click();
+            
+            showNotification('Registro exportado correctamente', 'success');
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📦 Sistema de gestión de pedidos inicializado');
+            
+            // Inicializar sistema de tabs
+            initializeTabs();
+            
+            // Cargar datos iniciales
+            generarSiguienteId();
+            cargarTablaPedidos();
+            actualizarContadores();
+            actualizarEstadisticas();
+            
+            // Configurar cierre de notificaciones
+            document.querySelector('.close-notification').addEventListener('click', function() {
+                const notification = document.getElementById('notification');
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
+            });
+            
+            // Notificación de bienvenida
+            setTimeout(() => {
+                showNotification('Sistema de gestión de pedidos listo. Usa las pestañas para navegar.', 'info', 3000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
