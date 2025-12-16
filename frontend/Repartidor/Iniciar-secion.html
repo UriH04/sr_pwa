@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - RutaTec</title>
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --azul-fuerte: #0c1b33;
+            --azul-medio: #1a3a5f;
+            --azul-claro: #3498db;
+            --azul-muy-claro: #bbdefb;
+            --negro: #111111;
+            --negro-claro: #1e1e1e;
+            --blanco: #ffffff;
+            --gris-claro: #e8f4fc;
+            --verde: #2ecc71;
+            --rojo: #e74c3c;
+            --degrade-fondo: linear-gradient(135deg, var(--azul-fuerte) 0%, var(--azul-medio) 50%, var(--azul-fuerte) 100%);
+            --degrade-boton: linear-gradient(135deg, var(--azul-medio), var(--azul-claro));
+            --sombra: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --sombra-fuerte: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--degrade-fondo);
+            color: var(--blanco);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== ELEMENTOS DECORATIVOS CSS ===== */
+        .decoracion {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .circulo {
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--azul-claro), transparent 70%);
+        }
+
+        .circulo-1 {
+            width: 350px;
+            height: 350px;
+            top: -150px;
+            right: -100px;
+            animation: flotar 20s ease-in-out infinite;
+        }
+
+        .circulo-2 {
+            width: 250px;
+            height: 250px;
+            bottom: 50px;
+            left: -100px;
+            animation: flotar 25s ease-in-out infinite reverse;
+        }
+
+        .circulo-3 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            right: 10%;
+            animation: flotar 30s ease-in-out infinite;
+        }
+
+        .linea {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--azul-claro), transparent);
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .linea-1 {
+            transform: rotate(45deg);
+            animation: moverLinea 40s linear infinite;
+        }
+
+        .linea-2 {
+            transform: rotate(-30deg);
+            animation: moverLinea 35s linear infinite reverse;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
+
+        @keyframes moverLinea {
+            0% { transform: rotate(45deg) translateX(-100%); }
+            100% { transform: rotate(45deg) translateX(100%); }
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .contenedor {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            animation: aparecer 0.8s ease-out;
+        }
+
+        /* ===== LOGO Y TÍTULO ===== */
+        .cabecera-login {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-rutatec {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 130px;
+            height: 130px;
+            background: var(--degrade-boton);
+            border-radius: 50%;
+            margin-bottom: 25px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--sombra-fuerte),
+                        0 0 0 10px rgba(52, 152, 219, 0.2),
+                        0 0 0 20px rgba(26, 58, 95, 0.1);
+            background-image: url('https://via.placeholder.com/130x130/1a3a5f/ffffff?text=RT');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .logo-rutatec:hover {
+            transform: scale(1.1) rotate(10deg);
+            animation: latido 1s ease-in-out;
+        }
+
+        .titulo-principal {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--azul-claro), var(--azul-muy-claro));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitulo {
+            font-size: 1.2rem;
+            color: var(--azul-muy-claro);
+            letter-spacing: 2px;
+            font-weight: 300;
+            text-transform: uppercase;
+        }
+
+        /* ===== CONTENEDOR DE LOGIN ===== */
+        .contenedor-login {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(26, 58, 95, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--sombra-fuerte);
+            border: 2px solid var(--azul-claro);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            animation: aparecer 0.8s ease-out 0.2s both;
+        }
+
+        .contenedor-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--azul-claro), var(--verde));
+        }
+
+        .encabezado-login {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .encabezado-login h2 {
+            font-size: 2rem;
+            color: var(--blanco);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .encabezado-login h2::before {
+            content: "→";
+            color: var(--azul-claro);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .encabezado-login p {
+            color: var(--azul-muy-claro);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* ===== FORMULARIO DE LOGIN ===== */
+        .formulario-login {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        .grupo-formulario {
+            position: relative;
+        }
+
+        .etiqueta-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--azul-muy-claro);
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+
+        .etiqueta-input::before {
+            content: "";
+            color: var(--azul-claro);
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .etiqueta-input[for="usuario"]::before {
+            content: "👤";
+        }
+
+        .etiqueta-input[for="contrasena"]::before {
+            content: "🔒";
+        }
+
+        .contenedor-input {
+            position: relative;
+            width: 100%;
+        }
+
+        .contenedor-input input {
+            width: 100%;
+            padding: 18px 60px 18px 25px;
+            background: rgba(17, 17, 17, 0.9);
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            border-radius: 15px;
+            color: var(--blanco);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .contenedor-input input:focus {
+            border-color: var(--azul-claro);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            background: rgba(17, 17, 17, 1);
+            transform: translateY(-2px);
+        }
+
+        .contenedor-input input::placeholder {
+            color: rgba(187, 222, 251, 0.5);
+        }
+
+        .icono-input {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--azul-claro);
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+
+        .contenedor-input[data-input="usuario"] .icono-input::before {
+            content: "👤";
+        }
+
+        .contenedor-input[data-input="contrasena"] .icono-input::before {
+            content: "🔒";
+        }
+
+        .contenedor-input:focus-within .icono-input {
+            color: var(--azul-muy-claro);
+            animation: latido 0.5s ease-in-out;
+        }
+
+        .boton-visibilidad {
+            position: absolute;
+            right: 55px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--azul-muy-claro);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+        }
+
+        .boton-visibilidad:hover {
+            color: var(--azul-claro);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .boton-visibilidad::before {
+            content: "👁️";
+        }
+
+        /* ===== BOTÓN DE LOGIN ===== */
+        .boton-login {
+            background: var(--degrade-boton);
+            color: var(--blanco);
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .boton-login:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, var(--azul-claro), var(--azul-medio));
+        }
+
+        .boton-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .boton-login::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .boton-login:hover::before {
+            left: 100%;
+        }
+
+        .boton-login::after {
+            content: "📤";
+            font-size: 1.2rem;
+        }
+
+        .boton-login.cargando::after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: var(--blanco);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* ===== OPCIONES ADICIONALES ===== */
+        .opciones-login {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .recordar-contrasena {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--azul-muy-claro);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .recordar-contrasena input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--azul-claro);
+            cursor: pointer;
+        }
+
+        .enlace-olvido {
+            color: var(--azul-muy-claro);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            padding: 8px 15px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .enlace-olvido:hover {
+            color: var(--azul-claro);
+            border-color: rgba(52, 152, 219, 0.3);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .enlace-olvido::before {
+            content: "❓";
+            margin-right: 5px;
+        }
+
+        /* ===== ENLACES DE NAVEGACIÓN ===== */
+        .contenedor-registro {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .texto-registro {
+            color: var(--azul-muy-claro);
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .enlace-registro {
+            color: var(--azul-muy-claro);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+            padding: 15px 30px;
+            background: rgba(26, 58, 95, 0.7);
+            border-radius: 12px;
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .enlace-registro:hover {
+            color: var(--azul-claro);
+            background: rgba(26, 58, 95, 0.9);
+            border-color: var(--azul-claro);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .enlace-registro::before {
+            content: "➕";
+            transition: transform 0.3s ease;
+        }
+
+        .enlace-registro:hover::before {
+            transform: scale(1.2);
+        }
+
+        /* ===== PIE DE PÁGINA ===== */
+        .pie-pagina {
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--blanco);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+            border-top: 3px solid var(--azul-claro);
+            z-index: 1;
+            position: relative;
+        }
+
+        .pie-pagina::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--azul-claro), var(--verde), var(--azul-claro));
+        }
+
+        .pie-pagina p {
+            font-size: 1rem;
+            color: var(--azul-muy-claro);
+            letter-spacing: 1.5px;
+        }
+
+        /* ===== MENSAJES DE ERROR/ÉXITO ===== */
+        .mensaje-estado {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: aparecer 0.5s ease-out;
+        }
+
+        .mensaje-estado.error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            display: flex;
+        }
+
+        .mensaje-estado.error::before {
+            content: "❌";
+            font-size: 1.2rem;
+        }
+
+        .mensaje-estado.exito {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--verde);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            display: flex;
+        }
+
+        .mensaje-estado.exito::before {
+            content: "✅";
+            font-size: 1.2rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .contenedor {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            .contenedor-login {
+                padding: 30px;
+            }
+            
+            .titulo-principal {
+                font-size: 2.5rem;
+            }
+            
+            .encabezado-login h2 {
+                font-size: 1.7rem;
+            }
+            
+            .opciones-login {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .titulo-principal {
+                font-size: 2rem;
+            }
+            
+            .logo-rutatec {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .contenedor-login {
+                padding: 25px 20px;
+            }
+            
+            .contenedor-input input {
+                padding: 15px 50px 15px 20px;
+            }
+            
+            .boton-login {
+                padding: 18px 30px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decoracion circulo circulo-1"></div>
+    <div class="decoracion circulo circulo-2"></div>
+    <div class="decoracion circulo circulo-3"></div>
+    <div class="decoracion linea linea-1"></div>
+    <div class="decoracion linea linea-2"></div>
+    
+    <div class="contenedor">
+        <header class="cabecera-login">
+            <div class="logo-rutatec" id="logoRutaTec" onclick="window.location.href='index.html'"></div>
+            <h1 class="titulo-principal">RutaTec</h1>
+            <p class="subtitulo">Accede a tu cuenta</p>
+        </header>
+        
+        <div class="contenedor-login">
+            <div class="encabezado-login">
+                <h2>Iniciar Sesión</h2>
+                <p>Introduce tus credenciales para acceder a tu cuenta</p>
+            </div>
+            
+            <div class="mensaje-estado" id="mensajeEstado"></div>
+            
+            <form id="formularioLogin" class="formulario-login">
+                <div class="grupo-formulario">
+                    <label class="etiqueta-input" for="usuario">Usuario</label>
+                    <div class="contenedor-input" data-input="usuario">
+                        <input type="text" id="usuario" name="usuario" 
+                               placeholder="Ingresa tu nombre de usuario" required autofocus>
+                        <span class="icono-input"></span>
+                    </div>
+                </div>
+                
+                <div class="grupo-formulario">
+                    <label class="etiqueta-input" for="contrasena">Contraseña</label>
+                    <div class="contenedor-input" data-input="contrasena">
+                        <input type="password" id="contrasena" name="contrasena" 
+                               placeholder="Ingresa tu contraseña" required>
+                        <span class="icono-input"></span>
+                        <button type="button" class="boton-visibilidad" id="botonVisibilidad"></button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="boton-login" id="botonLogin">
+                    Iniciar Sesión
+                </button>
+            </form>
+            
+            <div class="opciones-login">
+                <label class="recordar-contrasena">
+                    <input type="checkbox" id="recordarSesion">
+                    <span>Recordar sesión</span>
+                </label>
+                <a href="recuperar-contrasena.html" class="enlace-olvido">
+                    ¿Olvidaste tu contraseña?
+                </a>
+            </div>
+            
+            <div class="contenedor-registro">
+                <p class="texto-registro">¿No tienes una cuenta?</p>
+                <a href="registro.html" class="enlace-registro">
+                    Crear nueva cuenta
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="pie-pagina">
+        <p>© 2025 RutaTec - Sistema de Optimización Logística. Todos los derechos reservados.</p>
+    </footer>
+    
+    <script>
+        // ===== ELEMENTOS DEL DOM =====
+        const formulario = document.getElementById('formularioLogin');
+        const usuarioInput = document.getElementById('usuario');
+        const contrasenaInput = document.getElementById('contrasena');
+        const botonVisibilidad = document.getElementById('botonVisibilidad');
+        const botonLogin = document.getElementById('botonLogin');
+        const mensajeEstado = document.getElementById('mensajeEstado');
+        const recordarSesion = document.getElementById('recordarSesion');
+        const logoRutaTec = document.getElementById('logoRutaTec');
+
+        // ===== DATOS DE USUARIOS (SIMULACIÓN) =====
+        // Cargar usuarios del localStorage o usar valores por defecto
+        let usuarios = JSON.parse(localStorage.getItem('usuariosRutaTec')) || {
+            'admin': { 
+                contrasena: 'Admin123!', 
+                nombre: 'Administrador', 
+                rol: 'admin',
+                email: 'admin@rutatec.com',
+                telefono: '+52 55 1234 5678'
+            }
+        };
+
+        // ===== FUNCIONES DE UTILIDAD =====
+        function mostrarMensaje(texto, tipo) {
+            mensajeEstado.textContent = texto;
+            mensajeEstado.className = `mensaje-estado ${tipo}`;
+            mensajeEstado.style.display = 'flex';
+            
+            if (tipo === 'error') {
+                setTimeout(() => {
+                    mensajeEstado.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function verificarCredenciales(usuario, contrasena) {
+            if (!usuarios[usuario]) {
+                return { valido: false, mensaje: 'Usuario no encontrado' };
+            }
+            
+            if (usuarios[usuario].contrasena !== contrasena) {
+                return { valido: false, mensaje: 'Contraseña incorrecta' };
+            }
+            
+            return { 
+                valido: true, 
+                datos: usuarios[usuario] 
+            };
+        }
+
+        function crearSesion(usuario, datos) {
+            const sesion = {
+                usuario: usuario,
+                nombre: datos.nombre,
+                rol: datos.rol,
+                email: datos.email,
+                timestamp: Date.now(),
+                recordar: recordarSesion.checked
+            };
+            
+            localStorage.setItem('sesionRutaTec', JSON.stringify(sesion));
+            
+            if (recordarSesion.checked) {
+                localStorage.setItem('usuarioRecordado', usuario);
+            } else {
+                localStorage.removeItem('usuarioRecordado');
+            }
+        }
+
+        // ===== FUNCIÓN MODIFICADA: REDIRECCIÓN DE REPARTIDOR =====
+        function simularRedireccion() {
+            const pantallaCarga = document.createElement('div');
+            pantallaCarga.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: var(--degrade-fondo);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+                animation: aparecer 0.5s ease-out;
+            `;
+            
+            // CONTENIDO MODIFICADO: Mensaje de "Bienvenido Repartidor"
+            pantallaCarga.innerHTML = `
+                <div class="logo-rutatec" style="margin-bottom: 30px; animation: latido 2s infinite;"></div>
+                <h2 style="color: var(--blanco); margin-bottom: 20px; text-align: center;">
+                    <span style="display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,0.3); border-top-color: var(--blanco); border-radius: 50%; animation: spin 1s linear infinite;"></span> 
+                    Bienvenido Repartidor
+                </h2>
+                <div style="margin-top: 30px; width: 300px; height: 6px; background: rgba(30,30,30,0.7); border-radius: 3px; overflow: hidden;">
+                    <div id="barraCarga" style="height: 100%; background: linear-gradient(90deg, var(--azul-claro), var(--verde)); width: 0%; transition: width 0.3s ease;"></div>
+                </div>
+            `;
+            
+            document.body.appendChild(pantallaCarga);
+            
+            // Simular progreso de carga
+            let progreso = 0;
+            const intervalo = setInterval(() => {
+                progreso += Math.random() * 20;
+                const barraCarga = document.getElementById('barraCarga');
+                if (barraCarga) {
+                    barraCarga.style.width = `${Math.min(progreso, 100)}%`;
+                }
+                
+                if (progreso >= 100) {
+                    clearInterval(intervalo);
+                    setTimeout(() => {
+                        // REDIRECCIÓN MODIFICADA: Enlace a Ruta_repartidor.html
+                        window.location.href = './GPS/Ruta_repartidor.html';
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        // ===== EVENTOS =====
+        botonVisibilidad.addEventListener('click', function() {
+            const tipo = contrasenaInput.type === 'password' ? 'text' : 'password';
+            contrasenaInput.type = tipo;
+            this.innerHTML = tipo === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        formulario.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const usuario = usuarioInput.value.trim();
+            const contrasena = contrasenaInput.value.trim();
+            
+            if (!usuario || !contrasena) {
+                mostrarMensaje('Por favor, completa todos los campos', 'error');
+                return;
+            }
+            
+            const resultado = verificarCredenciales(usuario, contrasena);
+            
+            if (!resultado.valido) {
+                mostrarMensaje(resultado.mensaje, 'error');
+                formulario.style.animation = 'none';
+                setTimeout(() => {
+                    formulario.style.animation = 'shake 0.5s ease-in-out';
+                }, 10);
+                setTimeout(() => {
+                    formulario.style.animation = '';
+                }, 500);
+                return;
+            }
+            
+            botonLogin.disabled = true;
+            botonLogin.classList.add('cargando');
+            
+            setTimeout(() => {
+                crearSesion(usuario, resultado.datos);
+                simularRedireccion();
+            }, 1000);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuarioRecordado = localStorage.getItem('usuarioRecordado');
+            if (usuarioRecordado) {
+                usuarioInput.value = usuarioRecordado;
+                recordarSesion.checked = true;
+            }
+            
+            const sesionGuardada = localStorage.getItem('sesionRutaTec');
+            if (sesionGuardada) {
+                const sesion = JSON.parse(sesionGuardada);
+                if (sesion.recordar && (Date.now() - sesion.timestamp) < 86400000) {
+                    usuarioInput.value = sesion.usuario;
+                    recordarSesion.checked = true;
+                    mostrarMensaje(`Sesión activa encontrada para ${sesion.nombre}`, 'exito');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

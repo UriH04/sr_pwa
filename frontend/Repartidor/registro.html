@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - RutaTec</title>
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --azul-fuerte: #0c1b33;
+            --azul-medio: #1a3a5f;
+            --azul-claro: #3498db;
+            --azul-muy-claro: #bbdefb;
+            --negro: #111111;
+            --negro-claro: #1e1e1e;
+            --blanco: #ffffff;
+            --gris-claro: #e8f4fc;
+            --verde: #2ecc71;
+            --rojo: #e74c3c;
+            --degrade-fondo: linear-gradient(135deg, var(--azul-fuerte) 0%, var(--azul-medio) 50%, var(--azul-fuerte) 100%);
+            --degrade-boton: linear-gradient(135deg, var(--azul-medio), var(--azul-claro));
+            --sombra: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --sombra-fuerte: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--degrade-fondo);
+            color: var(--blanco);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== ELEMENTOS DECORATIVOS CSS ===== */
+        .decoracion {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .circulo {
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--azul-claro), transparent 70%);
+        }
+
+        .circulo-1 {
+            width: 350px;
+            height: 350px;
+            top: -150px;
+            left: -100px;
+            animation: flotar 20s ease-in-out infinite;
+        }
+
+        .circulo-2 {
+            width: 250px;
+            height: 250px;
+            bottom: 50px;
+            right: -100px;
+            animation: flotar 25s ease-in-out infinite reverse;
+        }
+
+        .circulo-3 {
+            width: 200px;
+            height: 200px;
+            top: 60%;
+            left: 10%;
+            animation: flotar 30s ease-in-out infinite;
+        }
+
+        .linea {
+            position: absolute;
+            background: linear-gradient(90deg, transparent, var(--azul-claro), transparent);
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .linea-1 {
+            transform: rotate(-45deg);
+            animation: moverLinea 40s linear infinite;
+        }
+
+        .linea-2 {
+            transform: rotate(30deg);
+            animation: moverLinea 35s linear infinite reverse;
+        }
+
+        /* ===== ANIMACIONES ===== */
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
+
+        @keyframes moverLinea {
+            0% { transform: rotate(-45deg) translateX(-100%); }
+            100% { transform: rotate(-45deg) translateX(100%); }
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .contenedor {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            animation: aparecer 0.8s ease-out;
+        }
+
+        /* ===== LOGO Y TÍTULO ===== */
+        .cabecera-login {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-rutatec {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 130px;
+            height: 130px;
+            background: var(--degrade-boton);
+            border-radius: 50%;
+            margin-bottom: 25px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--sombra-fuerte),
+                        0 0 0 10px rgba(52, 152, 219, 0.2),
+                        0 0 0 20px rgba(26, 58, 95, 0.1);
+            background-image: url('https://via.placeholder.com/130x130/1a3a5f/ffffff?text=RT');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .logo-rutatec:hover {
+            transform: scale(1.1) rotate(10deg);
+            animation: latido 1s ease-in-out;
+        }
+
+        .titulo-principal {
+            font-size: 3.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--azul-claro), var(--azul-muy-claro));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitulo {
+            font-size: 1.2rem;
+            color: var(--azul-muy-claro);
+            letter-spacing: 2px;
+            font-weight: 300;
+            text-transform: uppercase;
+        }
+
+        /* ===== CONTENEDOR DE REGISTRO ===== */
+        .contenedor-registro {
+            width: 100%;
+            max-width: 600px;
+            background: rgba(26, 58, 95, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--sombra-fuerte);
+            border: 2px solid var(--azul-claro);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+            animation: aparecer 0.8s ease-out 0.2s both;
+        }
+
+        .contenedor-registro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--verde), var(--azul-claro));
+        }
+
+        .encabezado-registro {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .encabezado-registro h2 {
+            font-size: 2rem;
+            color: var(--blanco);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .encabezado-registro h2::before {
+            content: "👤";
+            color: var(--azul-claro);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .encabezado-registro p {
+            color: var(--azul-muy-claro);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* ===== FORMULARIO DE REGISTRO ===== */
+        .formulario-registro {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .grupo-formulario {
+            position: relative;
+        }
+
+        .etiqueta-input {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--azul-muy-claro);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        .etiqueta-input::before {
+            content: "";
+            color: var(--azul-claro);
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .etiqueta-input[for="nombre"]::before { content: "👤"; }
+        .etiqueta-input[for="email"]::before { content: "📧"; }
+        .etiqueta-input[for="telefono"]::before { content: "📱"; }
+        .etiqueta-input[for="usuario"]::before { content: "🔑"; }
+        .etiqueta-input[for="contrasena"]::before { content: "🔒"; }
+        .etiqueta-input[for="confirmar"]::before { content: "🔒"; }
+        .etiqueta-input[for="rol"]::before { content: "🎭"; }
+
+        .contenedor-input {
+            position: relative;
+            width: 100%;
+        }
+
+        .contenedor-input input,
+        .contenedor-input select {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            background: rgba(17, 17, 17, 0.9);
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            border-radius: 15px;
+            color: var(--blanco);
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .contenedor-input select {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .contenedor-input input:focus,
+        .contenedor-input select:focus {
+            border-color: var(--azul-claro);
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+            background: rgba(17, 17, 17, 1);
+            transform: translateY(-2px);
+        }
+
+        .contenedor-input input::placeholder {
+            color: rgba(187, 222, 251, 0.5);
+        }
+
+        .icono-input {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--azul-claro);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        .boton-visibilidad {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--azul-muy-claro);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        .boton-visibilidad:hover {
+            color: var(--azul-claro);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .boton-visibilidad::before {
+            content: "👁️";
+        }
+
+        .fila-formulario {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .fila-formulario {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== BOTÓN DE REGISTRO ===== */
+        .boton-registro {
+            background: var(--degrade-boton);
+            color: var(--blanco);
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 1px;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .boton-registro:hover:not(:disabled) {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, var(--azul-claro), var(--azul-medio));
+        }
+
+        .boton-registro:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .boton-registro::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .boton-registro:hover::before {
+            left: 100%;
+        }
+
+        .boton-registro::after {
+            content: "✅";
+            font-size: 1.2rem;
+        }
+
+        .boton-registro.cargando::after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: var(--blanco);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* ===== TÉRMINOS Y CONDICIONES ===== */
+        .terminos {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .terminos label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: var(--azul-muy-claro);
+            font-size: 0.95rem;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .terminos input[type="checkbox"] {
+            margin-top: 4px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--azul-claro);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .enlace-terminos {
+            color: var(--azul-claro);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .enlace-terminos:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== ENLACE DE INICIO DE SESIÓN ===== */
+        .contenedor-inicio-sesion {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .texto-inicio-sesion {
+            color: var(--azul-muy-claro);
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .enlace-inicio-sesion {
+            color: var(--azul-muy-claro);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+            padding: 15px 30px;
+            background: rgba(26, 58, 95, 0.7);
+            border-radius: 12px;
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .enlace-inicio-sesion:hover {
+            color: var(--azul-claro);
+            background: rgba(26, 58, 95, 0.9);
+            border-color: var(--azul-claro);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .enlace-inicio-sesion::before {
+            content: "←";
+            transition: transform 0.3s ease;
+        }
+
+        .enlace-inicio-sesion:hover::before {
+            transform: translateX(-5px);
+        }
+
+        /* ===== PIE DE PÁGINA ===== */
+        .pie-pagina {
+            background: rgba(0, 0, 0, 0.9);
+            color: var(--blanco);
+            text-align: center;
+            padding: 30px 20px;
+            margin-top: 60px;
+            border-top: 3px solid var(--azul-claro);
+            z-index: 1;
+            position: relative;
+        }
+
+        .pie-pagina::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--azul-claro), var(--verde), var(--azul-claro));
+        }
+
+        .pie-pagina p {
+            font-size: 1rem;
+            color: var(--azul-muy-claro);
+            letter-spacing: 1.5px;
+        }
+
+        /* ===== MENSAJES DE ERROR/ÉXITO ===== */
+        .mensaje-estado {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 15px;
+            animation: aparecer 0.5s ease-out;
+        }
+
+        .mensaje-estado.error {
+            background: rgba(231, 76, 60, 0.15);
+            color: var(--rojo);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            display: flex;
+        }
+
+        .mensaje-estado.error::before {
+            content: "❌";
+            font-size: 1.2rem;
+        }
+
+        .mensaje-estado.exito {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--verde);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            display: flex;
+        }
+
+        .mensaje-estado.exito::before {
+            content: "✅";
+            font-size: 1.2rem;
+        }
+
+        /* ===== INDICADOR DE FUERZA DE CONTRASEÑA ===== */
+        .indicador-fuerza {
+            margin-top: 10px;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(30, 30, 30, 0.7);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .barra-fuerza {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .fuerza-texto {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: var(--azul-muy-claro);
+            text-align: right;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .contenedor {
+                padding: 15px;
+                margin: 20px auto;
+            }
+            
+            .contenedor-registro {
+                padding: 30px;
+            }
+            
+            .titulo-principal {
+                font-size: 2.5rem;
+            }
+            
+            .encabezado-registro h2 {
+                font-size: 1.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .titulo-principal {
+                font-size: 2rem;
+            }
+            
+            .logo-rutatec {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .contenedor-registro {
+                padding: 25px 20px;
+            }
+            
+            .contenedor-input input,
+            .contenedor-input select {
+                padding: 14px 45px 14px 15px;
+            }
+            
+            .boton-registro {
+                padding: 18px 30px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Elementos decorativos CSS -->
+    <div class="decoracion circulo circulo-1"></div>
+    <div class="decoracion circulo circulo-2"></div>
+    <div class="decoracion circulo circulo-3"></div>
+    <div class="decoracion linea linea-1"></div>
+    <div class="decoracion linea linea-2"></div>
+    
+    <div class="contenedor">
+        <!-- Cabecera del registro -->
+        <header class="cabecera-login">
+            <div class="logo-rutatec" id="logoRutaTec" onclick="window.location.href='index.html'"></div>
+            <h1 class="titulo-principal">RutaTec</h1>
+            <p class="subtitulo">Crear Nueva Cuenta</p>
+        </header>
+        
+        <!-- Contenedor de registro -->
+        <div class="contenedor-registro">
+            <div class="encabezado-registro">
+                <h2>Registro de Usuario</h2>
+                <p>Completa el formulario para crear tu cuenta en RutaTec</p>
+            </div>
+            
+            <!-- Mensaje de estado -->
+            <div class="mensaje-estado" id="mensajeEstado"></div>
+            
+            <!-- Formulario de registro -->
+            <form id="formularioRegistro" class="formulario-registro">
+                <!-- Información personal -->
+                <div class="fila-formulario">
+                    <div class="grupo-formulario">
+                        <label class="etiqueta-input" for="nombre">Nombre Completo</label>
+                        <div class="contenedor-input">
+                            <input type="text" id="nombre" name="nombre" 
+                                   placeholder="Ej: Juan Pérez González" required>
+                            <span class="icono-input"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-formulario">
+                        <label class="etiqueta-input" for="email">Correo Electrónico</label>
+                        <div class="contenedor-input">
+                            <input type="email" id="email" name="email" 
+                                   placeholder="ejemplo@correo.com" required>
+                            <span class="icono-input"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fila-formulario">
+                    <div class="grupo-formulario">
+                        <label class="etiqueta-input" for="telefono">Teléfono</label>
+                        <div class="contenedor-input">
+                            <input type="tel" id="telefono" name="telefono" 
+                                   placeholder="+52 55 1234 5678">
+                            <span class="icono-input"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="grupo-formulario">
+                        <label class="etiqueta-input" for="rol">Tipo de Usuario</label>
+                        <div class="contenedor-input">
+                            <select id="rol" name="rol" required>
+                                <option value="">Selecciona un rol</option>
+                                <option value="cliente">Cliente</option>
+                                <option value="repartidor">Repartidor</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                            <span class="icono-input"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Credenciales -->
+                <div class="grupo-formulario">
+                    <label class="etiqueta-input" for="usuario">Nombre de Usuario</label>
+                    <div class="contenedor-input">
+                        <input type="text" id="usuario" name="usuario" 
+                               placeholder="Ej: juan.perez" required>
+                        <span class="icono-input"></span>
+                    </div>
+                </div>
+                
+                <div class="fila-formulario">
+                    <div class="grupo-formulario">
+                        <label class="etiqueta-input" for="contrasena">Contraseña</label>
+                        <div class="contenedor-input">
+                            <input type="password" id="contrasena" name="contrasena" 
+                                   placeholder="Mínimo 8 caracteres" required>
+                            <span class="icono-input"></span>
+                            <button type="button" class="boton-visibilidad" data-target="contrasena"></button>
+                        </div>
+                        <div class="indicador-fuerza" id="indicadorFuerza">
+                            <div class="barra-fuerza" id="barraFuerza"></div>
+                        </div>
+                        <div class="fuerza-texto" id="fuerzaTexto">Fuerza: Débil</div>
+                    </div>
+                    
+                    <div class="grupo-formulario">
+                        <label class="etiqueta-input" for="confirmar">Confirmar Contraseña</label>
+                        <div class="contenedor-input">
+                            <input type="password" id="confirmar" name="confirmar" 
+                                   placeholder="Repite tu contraseña" required>
+                            <span class="icono-input"></span>
+                            <button type="button" class="boton-visibilidad" data-target="confirmar"></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Términos y condiciones -->
+                <div class="terminos">
+                    <label>
+                        <input type="checkbox" id="aceptarTerminos" required>
+                        <span>
+                            Acepto los 
+                            <a href="#" class="enlace-terminos" onclick="mostrarTerminos()">términos y condiciones</a> 
+                            y la 
+                            <a href="#" class="enlace-terminos" onclick="mostrarPrivacidad()">política de privacidad</a> 
+                            de RutaTec
+                        </span>
+                    </label>
+                </div>
+                
+                <!-- Botón de registro -->
+                <button type="submit" class="boton-registro" id="botonRegistro">
+                    Crear Cuenta
+                </button>
+            </form>
+            
+            <!-- Enlace de inicio de sesión -->
+            <div class="contenedor-inicio-sesion">
+                <p class="texto-inicio-sesion">¿Ya tienes una cuenta?</p>
+                <a href="Iniciar-secion.html" class="enlace-inicio-sesion">
+                    Iniciar Sesión
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pie de página -->
+    <footer class="pie-pagina">
+        <p>© 2025 RutaTec - Sistema de Optimización Logística. Todos los derechos reservados.</p>
+    </footer>
+    
+    <script>
+        // ===== ELEMENTOS DEL DOM =====
+        const formulario = document.getElementById('formularioRegistro');
+        const mensajeEstado = document.getElementById('mensajeEstado');
+        const botonRegistro = document.getElementById('botonRegistro');
+        const indicadorFuerza = document.getElementById('indicadorFuerza');
+        const barraFuerza = document.getElementById('barraFuerza');
+        const fuerzaTexto = document.getElementById('fuerzaTexto');
+
+        // ===== FUNCIONES DE UTILIDAD =====
+        function mostrarMensaje(texto, tipo) {
+            mensajeEstado.textContent = texto;
+            mensajeEstado.className = `mensaje-estado ${tipo}`;
+            mensajeEstado.style.display = 'flex';
+            
+            if (tipo === 'error') {
+                setTimeout(() => {
+                    mensajeEstado.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function validarEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        function validarTelefono(telefono) {
+            const digitos = telefono.replace(/\D/g, '');
+            return digitos.length >= 10;
+        }
+
+        function verificarFuerzaContrasena(contrasena) {
+            let fuerza = 0;
+            
+            // Longitud mínima
+            if (contrasena.length >= 8) fuerza += 20;
+            if (contrasena.length >= 12) fuerza += 10;
+            
+            // Contiene mayúsculas
+            if (/[A-Z]/.test(contrasena)) fuerza += 20;
+            
+            // Contiene minúsculas
+            if (/[a-z]/.test(contrasena)) fuerza += 20;
+            
+            // Contiene números
+            if (/[0-9]/.test(contrasena)) fuerza += 20;
+            
+            // Contiene caracteres especiales
+            if (/[^A-Za-z0-9]/.test(contrasena)) fuerza += 10;
+            
+            return Math.min(fuerza, 100);
+        }
+
+        function actualizarIndicadorFuerza(contrasena) {
+            const fuerza = verificarFuerzaContrasena(contrasena);
+            
+            barraFuerza.style.width = `${fuerza}%`;
+            
+            if (fuerza < 40) {
+                barraFuerza.style.background = 'var(--rojo)';
+                fuerzaTexto.textContent = 'Fuerza: Débil';
+            } else if (fuerza < 70) {
+                barraFuerza.style.background = 'var(--warning)';
+                fuerzaTexto.textContent = 'Fuerza: Media';
+            } else {
+                barraFuerza.style.background = 'var(--verde)';
+                fuerzaTexto.textContent = 'Fuerza: Fuerte';
+            }
+        }
+
+        function registrarUsuario(datos) {
+            // Cargar usuarios existentes
+            let usuarios = JSON.parse(localStorage.getItem('usuariosRutaTec')) || {};
+            
+            // Verificar si el usuario ya existe
+            if (usuarios[datos.usuario]) {
+                return { exito: false, mensaje: 'El nombre de usuario ya está en uso' };
+            }
+            
+            // Verificar si el email ya está registrado
+            for (let user in usuarios) {
+                if (usuarios[user].email === datos.email) {
+                    return { exito: false, mensaje: 'El correo electrónico ya está registrado' };
+                }
+            }
+            
+            // Agregar nuevo usuario
+            usuarios[datos.usuario] = {
+                nombre: datos.nombre,
+                email: datos.email,
+                telefono: datos.telefono,
+                rol: datos.rol,
+                contrasena: datos.contrasena,
+                fechaRegistro: new Date().toISOString()
+            };
+            
+            // Guardar en localStorage
+            localStorage.setItem('usuariosRutaTec', JSON.stringify(usuarios));
+            
+            return { exito: true, datos: usuarios[datos.usuario] };
+        }
+
+        // ===== EVENTOS =====
+        // Visibilidad de contraseñas
+        document.querySelectorAll('.boton-visibilidad').forEach(boton => {
+            boton.addEventListener('click', function() {
+                const target = this.getAttribute('data-target');
+                const input = document.getElementById(target);
+                const tipo = input.type === 'password' ? 'text' : 'password';
+                input.type = tipo;
+                this.innerHTML = tipo === 'password' ? '👁️' : '👁️‍🗨️';
+            });
+        });
+
+        // Validar fuerza de contraseña en tiempo real
+        document.getElementById('contrasena').addEventListener('input', function(e) {
+            actualizarIndicadorFuerza(e.target.value);
+        });
+
+        // Envío del formulario
+        formulario.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener valores del formulario
+            const datos = {
+                nombre: document.getElementById('nombre').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telefono: document.getElementById('telefono').value.trim(),
+                rol: document.getElementById('rol').value,
+                usuario: document.getElementById('usuario').value.trim(),
+                contrasena: document.getElementById('contrasena').value,
+                confirmar: document.getElementById('confirmar').value
+            };
+            
+            // Validaciones
+            if (!datos.nombre) {
+                mostrarMensaje('Por favor ingresa tu nombre completo', 'error');
+                return;
+            }
+            
+            if (!validarEmail(datos.email)) {
+                mostrarMensaje('Por favor ingresa un correo electrónico válido', 'error');
+                return;
+            }
+            
+            if (datos.telefono && !validarTelefono(datos.telefono)) {
+                mostrarMensaje('Por favor ingresa un número de teléfono válido (mínimo 10 dígitos)', 'error');
+                return;
+            }
+            
+            if (!datos.rol) {
+                mostrarMensaje('Por favor selecciona un tipo de usuario', 'error');
+                return;
+            }
+            
+            if (!datos.usuario || datos.usuario.length < 3) {
+                mostrarMensaje('El nombre de usuario debe tener al menos 3 caracteres', 'error');
+                return;
+            }
+            
+            if (datos.contrasena.length < 8) {
+                mostrarMensaje('La contraseña debe tener al menos 8 caracteres', 'error');
+                return;
+            }
+            
+            if (datos.contrasena !== datos.confirmar) {
+                mostrarMensaje('Las contraseñas no coinciden', 'error');
+                return;
+            }
+            
+            if (!document.getElementById('aceptarTerminos').checked) {
+                mostrarMensaje('Debes aceptar los términos y condiciones', 'error');
+                return;
+            }
+            
+            // Deshabilitar botón y mostrar carga
+            botonRegistro.disabled = true;
+            botonRegistro.classList.add('cargando');
+            
+            // Simular procesamiento
+            setTimeout(() => {
+                const resultado = registrarUsuario(datos);
+                
+                if (resultado.exito) {
+                    mostrarMensaje('¡Cuenta creada exitosamente! Redirigiendo al inicio de sesión...', 'exito');
+                    
+                    // Redirigir después de 2 segundos
+                    setTimeout(() => {
+                        window.location.href = 'index.html?registro=exitoso&usuario=' + encodeURIComponent(datos.usuario);
+                    }, 2000);
+                } else {
+                    mostrarMensaje(resultado.mensaje, 'error');
+                    botonRegistro.disabled = false;
+                    botonRegistro.classList.remove('cargando');
+                }
+            }, 1500);
+        });
+
+        // Mostrar términos y condiciones (demo)
+        function mostrarTerminos() {
+            alert('Términos y Condiciones de RutaTec\n\n1. El usuario se compromete a usar el sistema de manera responsable.\n2. La información proporcionada debe ser verídica.\n3. RutaTec se reserva el derecho de suspender cuentas que violen las políticas.\n\nEste es un ejemplo. En un sistema real, mostrarías un documento completo.');
+        }
+
+        function mostrarPrivacidad() {
+            alert('Política de Privacidad de RutaTec\n\n1. Tus datos personales son protegidos según la ley.\n2. No compartimos tu información con terceros sin tu consentimiento.\n3. Puedes solicitar la eliminación de tus datos en cualquier momento.\n\nEste es un ejemplo. En un sistema real, mostrarías un documento completo.');
+        }
+
+        // Verificar si viene de un registro exitoso
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registro') === 'exitoso') {
+                const usuario = urlParams.get('usuario');
+                if (usuario) {
+                    mostrarMensaje(`¡Registro exitoso! Ahora puedes iniciar sesión con tu usuario: ${decodeURIComponent(usuario)}`, 'exito');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

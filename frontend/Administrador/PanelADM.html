@@ -885,7 +885,7 @@
                         <div class="function-icon">
                             <i class="fas fa-chart-bar"></i>
                         </div>
-                        <h3 class="function-title">Reportes y Analytics</h3>
+                        <h3 class="function-title">Reportes Logísticos</h3>
                         <p class="function-description">
                             Genera reportes detallados de desempeño, métricas de entrega, análisis de rentabilidad y tendencias. 
                             Exporta datos en múltiples formatos para análisis avanzado y presentaciones ejecutivas.
@@ -903,7 +903,7 @@
                         <div class="function-icon">
                             <i class="fas fa-cogs"></i>
                         </div>
-                        <h3 class="function-title">Configuración</h3>
+                        <h3 class="function-title">Configuración y Asignación</h3>
                         <p class="function-description">
                             Personaliza parámetros del sistema, gestiona usuarios y permisos, configura notificaciones, 
                             integraciones y ajusta las reglas de negocio según las necesidades específicas de tu operación.
@@ -921,7 +921,7 @@
                         <div class="function-icon">
                             <i class="fas fa-headset"></i>
                         </div>
-                        <h3 class="function-title">Centro de Soporte</h3>
+                        <h3 class="function-title">Soporte Técnico</h3>
                         <p class="function-description">
                             Gestiona consultas y problemas de clientes, seguimiento de tickets, respuestas automatizadas 
                             y métricas de satisfacción. Integrado completamente con el sistema de envíos para atención eficiente.
@@ -1017,7 +1017,7 @@
         const MODULE_URLS = {
             envios: './Paneles/gestion-envios.html',
             rutas: './Paneles/simulador.html',
-            reportes: './Paneles/reportes.html',
+            reportes: './Paneles/reporte.html',
             config: './Paneles/configuracion.html',
             soporte: './Paneles/soporte.html'
         };
@@ -1070,9 +1070,9 @@
             const moduleNames = {
                 envios: 'Gestión de Envíos',
                 rutas: 'Rutas y Entregas',
-                reportes: 'Reportes y Analytics',
-                config: 'Configuración',
-                soporte: 'Centro de Soporte'
+                reportes: 'Reportes Logísticos',
+                config: 'Configuración y Asignación',
+                soporte: 'Soporte Técnico'
             };
             
             showNotification(`Accediendo a ${moduleNames[module]}...`, 'info', 2000);

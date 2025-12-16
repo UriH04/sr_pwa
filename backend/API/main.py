@@ -5,7 +5,7 @@ from .routers import auth_router, ruta_router, simulacion_router
 
 
 # Crear app FastAPI
-app = FastAPI(title="Simulador de Rutas API", version="1.0")
+app = FastAPI(title="Simulador de Rutas UMB Cuatitlan", version="1.5")
 
 # Configurar CORS
 app.add_middleware(

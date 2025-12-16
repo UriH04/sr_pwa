@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS - Ruta de Entrega</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <style>
+        :root {
+            --azul-oscuro: #0a1128;
+            --azul-medio: #1c2e4a;
+            --azul-claro: #274c77;
+            --azul-muy-claro: #3a7ca5;
+            --verde: #2ecc71;
+            --blanco: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-medio) 100%);
+            color: var(--blanco);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .gps-header {
+            background: linear-gradient(135deg, var(--azul-medio) 0%, var(--azul-claro) 100%);
+            color: var(--blanco);
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header-content i {
+            font-size: 1.8rem;
+            color: var(--verde);
+        }
+        
+        .header-content h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            font-weight: 600;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .gps-btn {
+            background: linear-gradient(135deg, var(--azul-muy-claro) 0%, var(--verde) 100%);
+            border: none;
+            color: var(--blanco);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        
+        .gps-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+        }
+        
+        .map-container {
+            flex: 1;
+            position: relative;
+            background: rgba(10, 17, 40, 0.7);
+            min-height: 0;
+        }
+        
+        #mapaFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 17, 40, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 5px solid var(--verde);
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 17, 40, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+            z-index: 10;
+        }
+        
+        .error-icon {
+            font-size: 4rem;
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+        
+        .error-message {
+            max-width: 500px;
+            margin-bottom: 25px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+        }
+        
+        .retry-btn {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff4757 100%);
+            border: none;
+            color: var(--blanco);
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+        
+        .gps-footer {
+            background: rgba(28, 46, 74, 0.9);
+            padding: 10px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            border-top: 1px solid var(--azul-muy-claro);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--verde);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .last-updated {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        @media (max-width: 768px) {
+            .gps-header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+                text-align: center;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .gps-footer {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="gps-header">
+        <div class="header-content">
+            <i class="fas fa-map-marked-alt"></i>
+            <div>
+                <h1>Sistema de Navegación GPS</h1>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">Seguimiento en tiempo real de la ruta de entrega</p>
+            </div>
+        </div>
+        
+        <div class="header-controls">
+            <button class="gps-btn" id="refreshMap">
+                <i class="fas fa-sync-alt"></i>
+                Actualizar Mapa
+            </button>
+            <a href="Ruta_repartidor.html" class="gps-btn">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Panel
+            </a>
+        </div>
+    </div>
+    
+    <!-- Mapa -->
+    <div class="map-container">
+        <!-- Loading -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+            <h3 style="margin-bottom: 10px; color: var(--blanco);">Cargando mapa de ruta...</h3>
+            <p style="color: rgba(255, 255, 255, 0.7); text-align: center; max-width: 400px;">
+                Conectando con el sistema de rutas y cargando el mapa interactivo
+            </p>
+        </div>
+        
+        <!-- Error -->
+        <div class="error-overlay" id="errorOverlay">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2 style="margin-bottom: 15px; color: #ff6b6b;">Error al Cargar el Mapa</h2>
+            <div class="error-message" id="errorMessage">
+                No se pudo cargar el mapa de ruta. Por favor, verifica que:
+                <br>1. El servidor de rutas esté activo (localhost:8000)
+                <br>2. Se haya calculado una ruta desde el panel de administración
+            </div>
+            <button class="retry-btn" id="retryButton">
+                <i class="fas fa-redo"></i>
+                Reintentar Conexión
+            </button>
+        </div>
+        
+        <!-- Iframe para el mapa -->
+        <iframe id="mapaFrame" style="display: none;"></iframe>
+    </div>
+    
+    <!-- Footer -->
+    <div class="gps-footer">
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span>Sistema GPS Activo</span>
+        </div>
+        
+        <div class="last-updated">
+            <i class="fas fa-clock"></i>
+            <span id="lastUpdated">--:--:--</span>
+        </div>
+        
+        <div>
+            <span id="currentLocation">Cargando ubicación...</span>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let mapaCargado = false;
+            let ultimaActualizacion = new Date();
+            
+            // Función para actualizar el tiempo
+            function actualizarTiempo() {
+                const ahora = new Date();
+                const hora = ahora.getHours().toString().padStart(2, '0');
+                const minuto = ahora.getMinutes().toString().padStart(2, '0');
+                const segundo = ahora.getSeconds().toString().padStart(2, '0');
+                $('#lastUpdated').text(`${hora}:${minuto}:${segundo}`);
+            }
+            
+            // Función para verificar conexión con el backend
+            function verificarConexionBackend() {
+                return fetch('http://localhost:8000/health', {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: { 'Accept': 'application/json' }
+                })
+                .then(response => response.ok)
+                .catch(() => false);
+            }
+            
+            // Función para cargar el mapa
+            async function cargarMapa() {
+                // Mostrar loading
+                $('#loadingOverlay').show();
+                $('#errorOverlay').hide();
+                $('#mapaFrame').hide();
+                
+                // Verificar conexión con backend
+                const conexionOk = await verificarConexionBackend();
+                
+                if (!conexionOk) {
+                    mostrarError('No se pudo conectar con el servidor de rutas. Asegúrate de que el backend esté ejecutándose en localhost:8000');
+                    return;
+                }
+                
+                try {
+                    // Intentar cargar la última ruta calculada
+                    // Esta información debería estar almacenada en localStorage por el simulador.html
+                    const ultimaRuta = localStorage.getItem('ultimaRutaMulti');
+                    
+                    if (!ultimaRuta) {
+                        mostrarError('No hay una ruta calculada disponible. Por favor, calcula una ruta desde el panel de administración.');
+                        return;
+                    }
+                    
+                    const rutaData = JSON.parse(ultimaRuta);
+                    const origen = rutaData.origen || "Manzana 005, Loma Bonita, 54879 Cuautitlán, Méx.";
+                    const destinos = rutaData.destinos || [];
+                    
+                    if (destinos.length === 0) {
+                        mostrarError('No se encontraron destinos en la ruta almacenada. Calcula una nueva ruta.');
+                        return;
+                    }
+                    
+                    console.log('Cargando mapa con:', { origen, destinos: destinos.length });
+                    
+                    // Hacer la petición para obtener el mapa HTML
+                    const response = await fetch('http://localhost:8000/simulacion/render-multi', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'text/html'
+                        },
+                        body: JSON.stringify({
+                            origen: origen,
+                            destinos: destinos
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Error HTTP: ${response.status}`);
+                    }
+                    
+                    const htmlMapa = await response.text();
+                    
+                    // Insertar el HTML en el iframe
+                    const frame = document.getElementById('mapaFrame');
+                    const doc = frame.contentWindow.document;
+                    doc.open();
+                    doc.write(htmlMapa);
+                    doc.close();
+                    
+                    // Ocultar loading y mostrar mapa
+                    $('#loadingOverlay').hide();
+                    $('#mapaFrame').show();
+                    mapaCargado = true;
+                    ultimaActualizacion = new Date();
+                    
+                    console.log('✅ Mapa cargado exitosamente');
+                    
+                } catch (error) {
+                    console.error('Error cargando mapa:', error);
+                    mostrarError(`Error al cargar el mapa: ${error.message}`);
+                }
+            }
+            
+            // Función para mostrar error
+            function mostrarError(mensaje) {
+                $('#loadingOverlay').hide();
+                $('#errorMessage').html(mensaje.replace(/\n/g, '<br>'));
+                $('#errorOverlay').show();
+                mapaCargado = false;
+            }
+            
+            // Función para simular ubicación GPS (en producción usarías la API de geolocalización)
+            function actualizarUbicacion() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            const lat = position.coords.latitude.toFixed(6);
+                            const lng = position.coords.longitude.toFixed(6);
+                            $('#currentLocation').text(`📍 ${lat}, ${lng}`);
+                        },
+                        function(error) {
+                            $('#currentLocation').text('📍 Ubicación no disponible');
+                        }
+                    );
+                } else {
+                    $('#currentLocation').text('📍 GPS no soportado');
+                }
+            }
+            
+            // Event Listeners
+            $('#refreshMap').click(function() {
+                if (mapaCargado) {
+                    ultimaActualizacion = new Date();
+                }
+                cargarMapa();
+            });
+            
+            $('#retryButton').click(cargarMapa);
+            
+            // Inicializar
+            actualizarTiempo();
+            setInterval(actualizarTiempo, 1000);
+            
+            // Actualizar ubicación cada 30 segundos
+            actualizarUbicacion();
+            setInterval(actualizarUbicacion, 30000);
+            
+            // Cargar mapa al inicio
+            cargarMapa();
+            
+            // Escuchar mensajes desde el iframe (si el mapa necesita comunicarse)
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'MAP_LOADED') {
+                    console.log('Mapa reportado como cargado');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

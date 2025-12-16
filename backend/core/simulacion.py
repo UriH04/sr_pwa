@@ -27,6 +27,64 @@ def traducir_detalles_trafico(texto_original):
         "Miscellaneous": "Incidente misceláneo",
         "Other News": "Otras noticias",
         
+        # Términos de instrucciones de ruta
+        "Take": "Toma",
+        "Continue": "Continúa",
+        "Turn": "Gira",
+        "left": "izquierda",
+        "right": "derecha",
+        "onto": "hacia",
+        "the": "la",
+        "and": "y",
+        "for": "durante",
+        "mile": "milla",
+        "miles": "millas",
+        "km": "km",
+        "kilometer": "kilómetro",
+        "kilometers": "kilómetros",
+        "in": "en",
+        "Bear": "Mantente",
+        "Keep": "Mantente",
+        "Stay": "Permanece",
+        "Exit": "Toma la salida",
+        "Merge": "Incorpórate",
+        "Go": "Ve",
+        "straight": "derecho",
+        "slight": "ligero",
+        "sharp": "pronunciado",
+        
+        # Términos generales adicionales para instrucciones
+        "North": "Norte",
+        "South": "Sur",
+        "East": "Este",
+        "West": "Oeste",
+        "northbound": "sentido norte",
+        "southbound": "sentido sur",
+        "eastbound": "sentido este",
+        "westbound": "sentido oeste",
+        "toward": "hacia",
+        "roundabout": "glorieta",
+        "traffic circle": "rotonda",
+        "highway": "autopista",
+        "freeway": "carretera",
+        "expressway": "vía expresa",
+        "street": "calle",
+        "avenue": "avenida",
+        "boulevard": "bulevar",
+        "road": "carretera",
+        "drive": "paseo",
+        "lane": "carril",
+        "way": "vía",
+        
+        # Partes de instrucciones
+        "Destination will be on the": "El destino estará en la",
+        "You have arrived at your destination": "Has llegado a tu destino",
+        "Then": "Luego",
+        "Next": "Después",
+        "Approach": "Acércate a",
+        "Pass": "Pasa",
+        "Arrive": "Llega a",
+        
         # Términos generales
         "At ": "En ",
         "Between ": "Entre ",
@@ -84,10 +142,6 @@ def traducir_detalles_trafico(texto_original):
         "flooding": "inundaciones",
         
         # Direcciones
-        "northbound": "sentido norte",
-        "southbound": "sentido sur",
-        "eastbound": "sentido este",
-        "westbound": "sentido oeste",
         "north": "norte",
         "south": "sur",
         "east": "este",
@@ -129,6 +183,18 @@ def traducir_detalles_trafico(texto_original):
     
     texto = texto_original
     
+    # Traducir millas a kilómetros en instrucciones de ruta
+    import re
+    
+    # Convertir millas a kilómetros (1 milla = 1.60934 km)
+    def millas_a_km(match):
+        millas = float(match.group(1))
+        km = millas * 1.60934
+        return f"{km:.1f} km"
+    
+    # Buscar patrones como "0.5 miles" o "2.3 mile"
+    texto = re.sub(r'(\d+\.?\d*)\s*miles?', millas_a_km, texto, flags=re.IGNORECASE)
+    
     # Primero reemplazar términos específicos manteniendo mayúsculas/minúsculas
     for en, es in diccionario.items():
         # Reemplazar manteniendo capitalización
@@ -153,6 +219,53 @@ def traducir_detalles_trafico(texto_original):
     # Capitalizar primera letra
     if texto and len(texto) > 0:
         texto = texto[0].upper() + texto[1:]
+    
+    # Asegurar que las instrucciones tengan formato consistente
+    if "km" in texto:
+        # Asegurar que haya espacio antes de km si no lo hay
+        texto = texto.replace("km", " km")
+    
+    return texto
+
+def traducir_instruccion_ruta(instruccion_original):
+    """Traduce y formatea instrucciones de ruta específicamente"""
+    if not instruccion_original:
+        return "Continuar por la ruta"
+    
+    # Primero traducir usando la función general
+    texto = traducir_detalles_trafico(instruccion_original)
+    
+    # Correcciones específicas para instrucciones
+    correcciones = {
+        "Drive": "Conduce",
+        "Head": "Dirígete",
+        "Proceed": "Prosigue",
+        "Follow": "Sigue",
+        "Make a": "Realiza un giro",
+        "at the": "en la",
+        "on the": "en la",
+        "to the": "hacia la",
+        "in the": "en la",
+        "of the": "de la",
+        "your": "tu",
+        "destination": "destino",
+        "arrive": "llega",
+        "reach": "alcanza",
+        "begin": "comienza",
+        "end": "termina",
+        "start": "inicia",
+        "finish": "finaliza",
+        "enter": "entra a",
+        "leave": "sale de",
+        "cross": "cruza",
+        "pass by": "pasa por",
+        "go past": "pasa",
+        "come to": "llega a",
+    }
+    
+    for en, es in correcciones.items():
+        texto = texto.replace(f" {en} ", f" {es} ")
+        texto = texto.replace(f" {en.capitalize()} ", f" {es} ")
     
     return texto
 
@@ -202,7 +315,17 @@ def generar_mapa_visual(G, ruta_geometria, incidentes, paradas_ordenadas, nombre
     # Nodos intermedios (Puntos de la ruta)
     for node_id in G.nodes():
         datos = G.nodes[node_id]
-        folium.CircleMarker(location=datos['pos'], radius=3, color='blue', fill=True, fill_color='white', fill_opacity=1, popup=datos['desc']).add_to(mapa)
+        # Traducir la descripción del nodo
+        desc_traducida = traducir_instruccion_ruta(datos['desc'])
+        folium.CircleMarker(
+            location=datos['pos'], 
+            radius=3, 
+            color='blue', 
+            fill=True, 
+            fill_color='white', 
+            fill_opacity=1, 
+            popup=f"<b>Instrucción {node_id}:</b><br>{desc_traducida}"
+        ).add_to(mapa)
         
     mapa.fit_bounds([sw, ne])
     mapa.save(nombre_archivo)

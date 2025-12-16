@@ -6,6 +6,8 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime  # Importamos datetime
 import math  # Para la función haversine
+from pydantic import BaseModel
+from typing import List, Optional
 
 from ..dependencies import get_db
 from backend.API.models import Vehiculo, Pedido
@@ -16,10 +18,18 @@ from backend.core.simulacion import generar_mapa_visual, traducir_detalles_trafi
 router = APIRouter()
 load_dotenv()
 
+# --- MODELOS ---
+
 class RutaRequest(BaseModel):
     origen: str  # Ej: "UMB Cuautitlán"
     destino: str  # Ej: "Zócalo CDMX"
     pedido_id: Optional[int] = None  # Opcional
+
+
+
+class RutaMultiparadaRequest(BaseModel):
+    lugares: List[str]
+    optimizar: Optional[bool] = True
 
 class EventoTrafico(BaseModel):
     type: str  # Tipo interno: construction, event, hazard, etc.
@@ -55,6 +65,8 @@ class RutaResponse(BaseModel):
     mapa_html: str = "mapa_generado.html"
     mensaje: str
     estadisticas: Dict[str, Any]
+
+# --- FUNCIONES AUXILIARES ---
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     """Calcula distancia entre dos puntos en km usando fórmula de Haversine"""
@@ -210,6 +222,8 @@ def obtener_estadisticas_eventos(eventos: List[EventoTrafico]) -> Dict[str, Any]
         "tipos_diferentes": len(conteo_por_tipo),
         "impacto_total": sum(e.impacto for e in eventos if e.impacto)
     }
+
+# --- ENDPOINTS ---
 
 @router.post("/calcular", response_model=RutaResponse)
 async def calcular_ruta_optimizada(
@@ -668,10 +682,7 @@ def prediccion_trafico(
         raise HTTPException(status_code=500, detail=f"Error en predicción: {str(e)}")
 
 @router.post("/ruta-multiparada")
-def calcular_ruta_multiparada(
-    lugares: List[str],
-    optimizar: bool = True
-):
+def calcular_ruta_multiparada(request: RutaMultiparadaRequest):
     """
     Calcula ruta con múltiples paradas (problema del viajante)
     """
@@ -682,7 +693,7 @@ def calcular_ruta_multiparada(
             detail="API Key no configurada"
         )
     
-    if len(lugares) < 2:
+    if len(request.lugares) < 2:
         raise HTTPException(
             status_code=400,
             detail="Se requieren al menos 2 ubicaciones"
@@ -691,8 +702,8 @@ def calcular_ruta_multiparada(
     try:
         maniobras, geometria, bbox, orden = obtener_ruta_multiparada(
             MAPQUEST_API_KEY, 
-            lugares, 
-            optimizar
+            request.lugares, 
+            request.optimizar
         )
         
         if not maniobras:
@@ -715,12 +726,18 @@ def calcular_ruta_multiparada(
         generar_mapa_visual(grafo, geometria, incidentes, orden, "ruta_multiparada.html")
         
         return {
-            "paradas": len(lugares),
+            "paradas": len(request.lugares),
             "distancia_total_km": round(distancia_total, 2),
             "eventos_trafico": len(eventos_procesados),
             "instrucciones": len(instrucciones),
-            "orden_optimizado": [p['dir'] for p in orden] if orden else lugares,
-            "mapa_html": "ruta_multiparada.html"
+            "orden_optimizado": [p['dir'] for p in orden] if orden else request.lugares,
+            "mapa_html": "ruta_multiparada.html",
+            "estadisticas": {
+                "total_stops": len(request.lugares) - 1,  # Restamos 1 porque el origen está incluido
+                "total_events": len(eventos_procesados),
+                "total_distance_km": round(distancia_total, 2),
+                "estimated_time_min": round(distancia_total * 1.5, 1)  # Estimación: 1.5 min/km
+            }
         }
         
     except Exception as e:
@@ -728,4 +745,3 @@ def calcular_ruta_multiparada(
             status_code=500,
             detail=f"Error calculando ruta multiparada: {str(e)}"
         )
-

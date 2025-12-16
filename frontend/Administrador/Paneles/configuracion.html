@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración y Asignación - RutaTec Paquetería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ===== VARIABLES Y RESET ===== */
+        :root {
+            --primary-dark: #0c1b33;
+            --primary: #1a3a5f;
+            --primary-light: #3498db;
+            --primary-extra-light: #bbdefb;
+            --secondary: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+            --white: #ffffff;
+            
+            --gradient-bg: linear-gradient(135deg, var(--primary-dark) 0%, #0d2b4a 50%, var(--primary-dark) 100%);
+            --gradient-card: linear-gradient(145deg, rgba(26, 58, 95, 0.95), rgba(17, 34, 64, 0.95));
+            --gradient-primary: linear-gradient(135deg, var(--primary-light), #2980b9);
+            --gradient-warning: linear-gradient(135deg, var(--warning), #e67e22);
+            
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 20px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 15px 30px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.4);
+            
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --border-radius-xl: 20px;
+            
+            --transition-normal: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--gradient-bg);
+            color: var(--white);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== DECORACIONES DE FONDO ===== */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(26, 58, 95, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.05) 0%, transparent 20%);
+            z-index: -2;
+        }
+
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--primary-light), transparent 70%);
+            opacity: 0.15;
+            filter: blur(20px);
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape-2 {
+            width: 250px;
+            height: 250px;
+            bottom: -50px;
+            left: -100px;
+            animation: float 25s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== ESTRUCTURA PRINCIPAL ===== */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        /* ===== HEADER ===== */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-light), var(--primary-extra-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .logo-text p {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: var(--border-radius-md);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* ===== SISTEMA DE TABS ===== */
+        .tabs-container {
+            background: var(--gradient-card);
+            border-radius: var(--border-radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+            margin-bottom: 30px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+
+        .tabs-header {
+            display: flex;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border-bottom: 3px solid transparent;
+            color: var(--primary-extra-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: var(--white);
+        }
+
+        .tab.active {
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+        }
+
+        .tab-content {
+            padding: 40px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-icon {
+            font-size: 1.2rem;
+        }
+
+        /* ===== FORMULARIOS ===== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .section-header i {
+            color: var(--primary-light);
+            font-size: 1.3rem;
+            background: rgba(52, 152, 219, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-header h3 {
+            font-size: 1.4rem;
+            color: var(--white);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-extra-light);
+        }
+
+        .form-group label i {
+            color: var(--primary-light);
+            font-size: 0.9rem;
+            width: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-size: 1rem;
+            transition: all var(--transition-normal);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-control[readonly] {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary-extra-light);
+            cursor: not-allowed;
+        }
+
+        .input-help {
+            display: block;
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .consumo-section {
+            padding: 20px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: var(--border-radius-md);
+            margin-top: 15px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            margin: 30px 0;
+        }
+
+        /* ===== BOTONES ===== */
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .btn-warning {
+            background: var(--gradient-warning);
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ===== NOTIFICACIONES ===== */
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 20px 25px;
+            border-radius: var(--border-radius-md);
+            color: var(--white);
+            font-weight: 600;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(10px);
+            border-left: 5px solid;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            max-width: 350px;
+            display: none;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+            display: block;
+        }
+
+        .notification.success {
+            background: rgba(46, 204, 113, 0.9);
+            border-left-color: var(--secondary);
+        }
+
+        .notification.error {
+            background: rgba(231, 76, 60, 0.9);
+            border-left-color: var(--danger);
+        }
+
+        .notification .close-notification {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--white);
+            font-size: 1rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .notification .close-notification:hover {
+            opacity: 1;
+        }
+
+        /* ===== FOOTER ===== */
+        .dashboard-footer {
+            padding: 30px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .footer-text {
+            color: var(--primary-extra-light);
+            font-size: 0.9rem;
+        }
+
+        .session-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(52, 152, 219, 0.1);
+            padding: 12px 20px;
+            border-radius: var(--border-radius-md);
+            border: 1px solid rgba(52, 152, 219, 0.3);
+        }
+
+        .session-info i {
+            color: var(--primary-light);
+        }
+
+        #session-time {
+            font-weight: 600;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .logo-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .dashboard-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tab-content {
+                padding: 25px 20px;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .notification {
+                top: 20px;
+                right: 20px;
+                left: 20px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Decoraciones de fondo -->
+    <div class="bg-pattern"></div>
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+    </div>
+
+    <!-- Notificación -->
+    <div id="notification" class="notification">
+        <button class="close-notification"><i class="fas fa-times"></i></button>
+        <div id="notification-message"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="logo-section">
+                <div class="logo">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Configuración y Asignación</h1>
+                    <p>Gestión de vehículos y repartidores</p>
+                </div>
+            </div>
+            
+            <a href="../PanelADM.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Volver al Panel
+            </a>
+        </header>
+
+        <!-- Sistema de Tabs -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <div class="tab active" data-tab="config-vehiculo">
+                    <i class="fas fa-truck tab-icon"></i>
+                    <span>Configuración de Vehículos</span>
+                </div>
+                <div class="tab" data-tab="asignacion">
+                    <i class="fas fa-user-check tab-icon"></i>
+                    <span>Asignación a Repartidores</span>
+                </div>
+            </div>
+
+            <!-- Tab 1: Configuración de Vehículos -->
+            <div class="tab-content active" id="config-vehiculo">
+                <form id="vehiculoForm">
+                    <div class="form-grid">
+                        <!-- Información del Vehículo -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-truck"></i>
+                                <h3>Información del Vehículo</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="modelo">
+                                    <i class="fas fa-car"></i>
+                                    Modelo del vehículo
+                                </label>
+                                <input type="text" id="modelo" class="form-control" required placeholder="Ej: Toyota Hilux 2023">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tipo">
+                                    <i class="fas fa-gas-pump"></i>
+                                    Tipo de vehículo
+                                </label>
+                                <select id="tipo" class="form-control" required onchange="mostrarConsumo()">
+                                    <option value="">Seleccione una opción</option>
+                                    <option value="gasolina">Gasolina</option>
+                                    <option value="hibrido">Híbrido</option>
+                                    <option value="electrico">Eléctrico</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="capacidad">
+                                    <i class="fas fa-boxes"></i>
+                                    Capacidad máxima de paquetes
+                                </label>
+                                <input type="number" id="capacidad" class="form-control" min="1" required>
+                                <span class="input-help">Número total de paquetes que caben en el vehículo</span>
+                            </div>
+                        </div>
+
+                        <!-- Configuración del Envío -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-shipping-fast"></i>
+                                <h3>Configuración del Envío</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="velocidad">
+                                    <i class="fas fa-tachometer-alt"></i>
+                                    Velocidad promedio (km/h)
+                                </label>
+                                <input type="number" id="velocidad" class="form-control" min="1" required oninput="calcularTiempo()">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="hora_envio">
+                                    <i class="fas fa-clock"></i>
+                                    Hora de envío
+                                </label>
+                                <input type="time" id="hora_envio" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="distancia">
+                                    <i class="fas fa-route"></i>
+                                    Distancia a recorrer (km)
+                                </label>
+                                <input type="number" id="distancia" class="form-control" step="0.1" min="0.1" required oninput="calcularTiempo()">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tiempo">
+                                    <i class="fas fa-hourglass-half"></i>
+                                    Tiempo estimado de entrega
+                                </label>
+                                <input type="text" id="tiempo" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Consumo (dinámica) -->
+                    <div id="consumoSections"></div>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Guardar Configuración
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-redo"></i>
+                            Limpiar Formulario
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tab 2: Asignación a Repartidores -->
+            <div class="tab-content" id="asignacion">
+                <form id="asignacionForm">
+                    <div class="form-grid">
+                        <!-- Información del Repartidor -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-user-tie"></i>
+                                <h3>Información del Repartidor</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="id_repartidor">
+                                    <i class="fas fa-id-card"></i>
+                                    ID del repartidor
+                                </label>
+                                <input type="number" id="id_repartidor" class="form-control" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="nombre_repartidor">
+                                    <i class="fas fa-user"></i>
+                                    Nombre completo
+                                </label>
+                                <input type="text" id="nombre_repartidor" class="form-control" required placeholder="Ej: Juan Pérez García">
+                            </div>
+                        </div>
+
+                        <!-- Vehículo Asignado -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-truck-loading"></i>
+                                <h3>Vehículo Asignado</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="vehiculo_asignado">
+                                    <i class="fas fa-truck"></i>
+                                    Vehículo asignado
+                                </label>
+                                <input type="text" id="vehiculo_asignado" class="form-control" required placeholder="Ej: Ford Transit 2024">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="tipo_vehiculo">
+                                    <i class="fas fa-gas-pump"></i>
+                                    Tipo de vehículo
+                                </label>
+                                <select id="tipo_vehiculo" class="form-control" required onchange="mostrarCamposAsignacion()">
+                                    <option value="">Seleccione tipo</option>
+                                    <option value="gasolina">Gasolina</option>
+                                    <option value="hibrido">Híbrido</option>
+                                    <option value="electrico">Eléctrico</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Logística de Entrega -->
+                        <div class="form-section">
+                            <div class="section-header">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <h3>Logística de Entrega</h3>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="numero_paquetes">
+                                    <i class="fas fa-box"></i>
+                                    Número de paquetes
+                                </label>
+                                <input type="number" id="numero_paquetes" class="form-control" min="1" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ruta_entrega">
+                                    <i class="fas fa-map-pin"></i>
+                                    Ruta de entrega (Municipio)
+                                </label>
+                                <input type="text" id="ruta_entrega" class="form-control" required placeholder="Ej: Centro, Guadalajara">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Costos (dinámica) -->
+                    <div id="costosSections"></div>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-user-check"></i>
+                            Guardar Asignación
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="resetAsignacionForm()">
+                            <i class="fas fa-redo"></i>
+                            Limpiar Formulario
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div class="footer-text">
+                <p>&copy; 2025 RutaTec Paquetería - Sistema de Configuración</p>
+                <p>Gestión inteligente de flotilla y repartidores</p>
+            </div>
+            <div class="session-info">
+                <i class="fas fa-user-clock"></i>
+                <div>
+                    <div>Sesión activa</div>
+                    <div id="session-time">00:00</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // ===== CONFIGURACIÓN =====
+        const CONSUMO_POR_DEFECTO = {
+            gasolina: 0.08, // L/km
+            electrico: 0.15 // kWh/km
+        };
+
+        const VEHICULOS_DISPONIBLES = [
+            "Toyota Hilux 2023",
+            "Ford Transit 2024",
+            "Nissan NV350 2023",
+            "Chevrolet Montana 2024",
+            "Volkswagen Saveiro 2023"
+        ];
+
+        // ===== FUNCIONES UTILITARIAS =====
+        function showNotification(message, type = 'success', duration = 4000) {
+            const notification = document.getElementById('notification');
+            const messageElement = document.getElementById('notification-message');
+            
+            notification.className = `notification ${type} show`;
+            notification.style.display = 'block';
+            messageElement.textContent = message;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
+            }, duration);
+        }
+
+        function updateSessionTime() {
+            const now = new Date();
+            const sessionStart = new Date(now.getTime() - 45 * 60000);
+            const sessionDuration = Math.floor((now - sessionStart) / 60000);
+            const hours = Math.floor(sessionDuration / 60);
+            const minutes = sessionDuration % 60;
+            
+            document.getElementById('session-time').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+
+        // ===== FUNCIONES PARA CONFIGURACIÓN DE VEHÍCULOS =====
+        function mostrarConsumo() {
+            const tipo = document.getElementById("tipo").value;
+            const container = document.getElementById("consumoSections");
+            
+            // Limpiar sección anterior
+            container.innerHTML = '';
+            
+            if (!tipo) return;
+            
+            let html = '<div class="form-section consumo-section">';
+            html += '<div class="section-header"><i class="fas fa-chart-line"></i><h3>Consumo de Energía</h3></div>';
+            
+            if (tipo === "gasolina" || tipo === "hibrido") {
+                html += `
+                    <div class="form-group">
+                        <label for="gasolina">
+                            <i class="fas fa-gas-pump"></i>
+                            Consumo de gasolina (L/km)
+                        </label>
+                        <input type="number" id="gasolina" class="form-control" step="0.001" 
+                               value="${CONSUMO_POR_DEFECTO.gasolina}" required>
+                        <span class="input-help">Ejemplo: ${CONSUMO_POR_DEFECTO.gasolina} L/km</span>
+                    </div>
+                `;
+            }
+            
+            if (tipo === "hibrido" || tipo === "electrico") {
+                html += `
+                    <div class="form-group">
+                        <label for="energia">
+                            <i class="fas fa-bolt"></i>
+                            Consumo de energía (kWh/km)
+                        </label>
+                        <input type="number" id="energia" class="form-control" step="0.001"
+                               value="${CONSUMO_POR_DEFECTO.electrico}" required>
+                        <span class="input-help">Ejemplo: ${CONSUMO_POR_DEFECTO.electrico} kWh/km</span>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function calcularTiempo() {
+            const distancia = parseFloat(document.getElementById("distancia")?.value) || 0;
+            const velocidad = parseFloat(document.getElementById("velocidad")?.value) || 0;
+            const campoTiempo = document.getElementById("tiempo");
+            
+            if (!campoTiempo) return;
+            
+            if (distancia > 0 && velocidad > 0) {
+                const tiempoHoras = distancia / velocidad;
+                
+                if (tiempoHoras >= 1) {
+                    campoTiempo.value = `${tiempoHoras.toFixed(2)} horas`;
+                } else {
+                    const minutos = Math.round(tiempoHoras * 60);
+                    campoTiempo.value = `${minutos} minutos`;
+                }
+            } else {
+                campoTiempo.value = "";
+            }
+        }
+
+        function resetForm() {
+            document.getElementById("vehiculoForm").reset();
+            document.getElementById("consumoSections").innerHTML = '';
+            document.getElementById("tiempo").value = "";
+            showNotification("Formulario limpiado correctamente", "success");
+        }
+
+        // ===== FUNCIONES PARA ASIGNACIÓN =====
+        function mostrarCamposAsignacion() {
+            const tipo = document.getElementById("tipo_vehiculo").value;
+            const container = document.getElementById("costosSections");
+            
+            // Limpiar sección anterior
+            container.innerHTML = '';
+            
+            if (!tipo) return;
+            
+            let html = '<div class="form-section consumo-section">';
+            html += '<div class="section-header"><i class="fas fa-money-bill-wave"></i><h3>Costos Operativos</h3></div>';
+            
+            if (tipo === "gasolina" || tipo === "hibrido") {
+                html += `
+                    <div class="form-group">
+                        <label for="gastos_gasolina">
+                            <i class="fas fa-gas-pump"></i>
+                            Costo estimado de gasolina ($)
+                        </label>
+                        <input type="number" id="gastos_gasolina" class="form-control" step="0.01" required>
+                        <span class="input-help">Costo estimado para esta ruta</span>
+                    </div>
+                `;
+            }
+            
+            if (tipo === "hibrido" || tipo === "electrico") {
+                html += `
+                    <div class="form-group">
+                        <label for="gasto_energia">
+                            <i class="fas fa-bolt"></i>
+                            Costo de energía por carga ($)
+                        </label>
+                        <input type="number" id="gasto_energia" class="form-control" step="0.01" required>
+                        <span class="input-help">Costo por carga completa</span>
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function resetAsignacionForm() {
+            document.getElementById("asignacionForm").reset();
+            document.getElementById("costosSections").innerHTML = '';
+            showNotification("Formulario de asignación limpiado", "success");
+        }
+
+        // ===== MANEJO DE FORMULARIOS =====
+        document.getElementById("vehiculoForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            // Obtener valores
+            const modelo = document.getElementById("modelo").value;
+            const tipo = document.getElementById("tipo").value;
+            const capacidad = document.getElementById("capacidad").value;
+            const velocidad = document.getElementById("velocidad").value;
+            const hora_envio = document.getElementById("hora_envio").value;
+            const distancia = document.getElementById("distancia").value;
+            const tiempo_estimado = document.getElementById("tiempo").value;
+            
+            const data = {
+                modelo,
+                tipo,
+                capacidad_paquetes: capacidad,
+                velocidad_kmh: velocidad,
+                hora_envio,
+                distancia_km: distancia,
+                tiempo_estimado
+            };
+            
+            // Agregar datos de consumo según tipo
+            if (tipo === "gasolina" || tipo === "hibrido") {
+                data.consumo_gasolina_km = document.getElementById("gasolina")?.value || null;
+            }
+            if (tipo === "hibrido" || tipo === "electrico") {
+                data.consumo_energia_km = document.getElementById("energia")?.value || null;
+            }
+            
+            console.log("Configuración de vehículo guardada:", data);
+            showNotification("Configuración de vehículo guardada correctamente", "success");
+        });
+
+        document.getElementById("asignacionForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            // Obtener valores
+            const id_repartidor = document.getElementById("id_repartidor").value;
+            const nombre_repartidor = document.getElementById("nombre_repartidor").value;
+            const vehiculo_asignado = document.getElementById("vehiculo_asignado").value;
+            const tipo_vehiculo = document.getElementById("tipo_vehiculo").value;
+            const numero_paquetes = document.getElementById("numero_paquetes").value;
+            const ruta_entrega = document.getElementById("ruta_entrega").value;
+            
+            const asignacion = {
+                id_repartidor,
+                nombre_repartidor,
+                vehiculo_asignado,
+                tipo_vehiculo,
+                numero_paquetes,
+                ruta_entrega
+            };
+            
+            // Agregar costos según tipo de vehículo
+            if (tipo_vehiculo === "gasolina" || tipo_vehiculo === "hibrido") {
+                asignacion.costo_gasolina = document.getElementById("gastos_gasolina")?.value || null;
+            }
+            if (tipo_vehiculo === "hibrido" || tipo_vehiculo === "electrico") {
+                asignacion.costo_energia = document.getElementById("gasto_energia")?.value || null;
+            }
+            
+            console.log("Asignación registrada:", asignacion);
+            showNotification("Asignación al repartidor guardada correctamente", "success");
+        });
+
+        // ===== SISTEMA DE TABS =====
+        function initializeTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remover clase active de todos los tabs y contenidos
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Activar tab seleccionado
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // ===== INICIALIZACIÓN =====
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('⚙️ Sistema de configuración inicializado');
+            
+            // Inicializar tabs
+            initializeTabs();
+            
+            // Actualizar tiempo de sesión
+            setInterval(updateSessionTime, 60000);
+            updateSessionTime();
+            
+            // Configurar cierre de notificaciones
+            document.querySelector('.close-notification').addEventListener('click', function() {
+                const notification = document.getElementById('notification');
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
+            });
+            
+            // Sugerencias para modelo de vehículo
+            const modeloInput = document.getElementById("modelo");
+            if (modeloInput) {
+                modeloInput.addEventListener('focus', function() {
+                    const datalist = document.createElement('datalist');
+                    datalist.id = 'modelos-sugerencias';
+                    VEHICULOS_DISPONIBLES.forEach(modelo => {
+                        const option = document.createElement('option');
+                        option.value = modelo;
+                        datalist.appendChild(option);
+                    });
+                    
+                    if (!document.getElementById('modelos-sugerencias')) {
+                        modeloInput.parentNode.appendChild(datalist);
+                        modeloInput.setAttribute('list', 'modelos-sugerencias');
+                    }
+                });
+            }
+            
+            // Configurar eventos para cálculo automático
+            const distanciaInput = document.getElementById("distancia");
+            const velocidadInput = document.getElementById("velocidad");
+            
+            if (distanciaInput) {
+                distanciaInput.addEventListener('input', calcularTiempo);
+            }
+            if (velocidadInput) {
+                velocidadInput.addEventListener('input', calcularTiempo);
+            }
+            
+            // Notificación inicial
+            setTimeout(() => {
+                showNotification('Sistema de configuración listo. Selecciona una pestaña para comenzar.', 'success', 3000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
